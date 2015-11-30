@@ -1,6 +1,6 @@
 
 // ---------------- 3. CONTROL FLOW ------------------
-// This .js file determines the flow of the variable elements in the experiment as dictated 
+// This .js file determines the flow of the variable elements in the experiment as dictated
 // by the various calls from pragmods html.
 
 /*
@@ -9,7 +9,7 @@ The first is base_image_pl, which stores the "underlying" or base images
 which will then be modified with props stored in the props_image_pl Array.
 
 NOTE: Unfortunately the number of variations for each type of object is hardoded.
-To make the code more usable it will be necessary to 
+To make the code more usable it will be necessary to
 */
 
 
@@ -26,41 +26,41 @@ showSlide("instructions");
 //		2) It hall all the functions that change the visual aspect of the experiment such as showing images, etc.
 
 var experiment = {
-    // These variables are the ones that will be sent to Turk at the end.
-    // The first batch, however, is set determined by the experiment conditions
-    // and therefore should not be affected by the decisions made by the experimental subject.
+  // These variables are the ones that will be sent to Turk at the end.
+  // The first batch, however, is set determined by the experiment conditions
+  // and therefore should not be affected by the decisions made by the experimental subject.
 
 
-    // Order of questions
-    permutations_used: permutations,
+  // Order of questions
+  permutations_used: permutations,
 
-    // Pre-test answers
-    pretest_responses: pretest_answers,
-    pretest_responses_by_presented_order: pretest_answers_by_order,
+  // Pre-test answers
+  pretest_responses: pretest_answers,
+  pretest_responses_by_presented_order: pretest_answers_by_order,
 
-    // Post-test answers
-    posttest_responses: posttest_answers,
-    posttest_responses_by_presented_order: posttest_answers_by_order,
+  // Post-test answers
+  posttest_responses: posttest_answers,
+  posttest_responses_by_presented_order: posttest_answers_by_order,
 
-    // Information to reconstruct
-    order_of_shapes: shape_abreviations,
-    order_as_presented: permuted_abreviations,
+  // Information to reconstruct
+  order_of_shapes: shape_abreviations,
+  order_as_presented: permuted_abreviations,
 
 
-    // Shapes guessed
-    guesses: [],
+  // Shapes guessed
+  guesses: [],
 
-    // Participant demo info
-    about: "",
-   	comment: "",
+  // Participant demo info
+  about: "",
+  comment: "",
 	age: "",
 	gender: "",
 
-	// measuring time of training 
+	// measuring time of training
 	training_time: "",
 
 
-	// To keep the parameters in the csv file 
+	// To keep the parameters in the csv file
 	all_answers_provided: all_answers_provided,
 	questions_permuted: questions_permuted,
 	skip_check: skip_check,
@@ -83,12 +83,42 @@ var experiment = {
 		        initial_questions += "<button type='button' class='btn btn-danger' data-value='1' onclick ='experiment.boostrap_pre_button_select(\"pretest_" + String(i) +"\", 1,  " + String(i) +  ")'>No</button>";
 		        initial_questions += "</div> <br>";
 		        initial_questions += "</td></tr>";
-			};
+			}
 			initial_questions += "</table>";
 			$("#pre_test_questions").html(initial_questions);
-			showSlide("pre_test");	
+			showSlide("pre_test");
 		}
 	},
+
+  // logic to display the slide
+  entity_pretest_slide: function() {
+    question_html = ""
+    for (q_shape of _.shuffle(singular_shapes)) {
+      answer_html = ""
+      for (a_shape of _.shuffle(singular_shapes)){
+        a_id = `entity1_${q_shape}_${a_shape}`
+        a_img_src = `shapes/${a_shape}_${_.random(1,3)}.png`
+        answer_html += `<td> <img id="${a_id}" class="withoutHover objTable" width="100px" height="100px" src="${a_img_src}" onclick="$('#${a_id}').toggleClass('highlighted')"> </td>`
+      }
+      question_html += `<br> Which is a ${q_shape}?" <br> <table align="center"> <tr> ${answer_html} </tr> </table>`
+    }
+    pretest2_html = `In the following questions please select <i>all</i> correct answers. <br> ${question_html} `
+    $("#entity_pretest_questions").html(pretest2_html)
+    showSlide("pre_test2")
+  },
+
+  entity_pretest_close: function(){
+    answers = []
+    for (q_shape of singular_shapes) {
+      row_answers = []
+      for (a_shape of singular_shapes) {
+        row_answers.push( $(`#entity1_${q_shape}_${a_shape}`).hasClass("highlighted") )
+      }
+      answers.push(row_answers)
+    }
+    experiment.entity_pre_answers = answers
+    experiment.training_slide()
+  },
 
 
 	training_slide: function() {
@@ -98,7 +128,7 @@ var experiment = {
 		var training_html = "";
 
 		if (training_regime < 2) {
-			training_html += "<center><br> We're going to learn about all the shapes you just "; 
+			training_html += "<center><br> We're going to learn about all the shapes you just ";
 			training_html += "answered questions about. <br> Here are examples from each of the ";
 			training_html += "categories. Take a close look. <br> After you're done, you will be tested again on your knowledge. </center><br><br>";
 			training_html += '<table align="center">';
@@ -142,7 +172,7 @@ var experiment = {
 		// Passive learning condition
 		if (training_regime == 4) {
 			training_html +=  "We're going to learn about what a <b>" + singular_shapes[shape_of_focus] +  "</b> is. <br>";
-			training_html +=  "On the basis of your responses, a teacher has chosen three examples to show you what <b>" + shapes[shape_of_focus] +  "</b> are. <br>"; 
+			training_html +=  "On the basis of your responses, a teacher has chosen three examples to show you what <b>" + shapes[shape_of_focus] +  "</b> are. <br>";
 			training_html +=  " Click on the three shapes with the boxes around them to learn whether each one is a <b>"+ singular_shapes[shape_of_focus] + "</b> or not. <br>";
 			training_html += "If it's a <b>"+ singular_shapes[shape_of_focus] + "</b>, it'll turn <font color='blue'>blue</font> when you click it. If it isn't, it'll turn <font color='red'>red</font>.";
 			training_html +=  " After you're done, you will be tested again on your knowledge. <br>";
@@ -172,7 +202,7 @@ var experiment = {
 		}
 
 		$("#training_examples").html(training_html);
-		showSlide("training");	
+		showSlide("training");
 
 		// After instantiation
 		if (training_regime == 4) {
@@ -203,12 +233,12 @@ var experiment = {
 		};
 		post_questions += "</table>";
 		$("#post_test_questions").html(post_questions);
-		showSlide("post_test");	
+		showSlide("post_test");
 	},
 
 
 	final_slide: function() {
-		showSlide("final_questions");	
+		showSlide("final_questions");
 	},
 
 
@@ -281,7 +311,7 @@ var experiment = {
 			}
 		}
 
-		
+
 	},
 
 	select_highlighted_shape: function(i, j) {
@@ -331,7 +361,7 @@ var experiment = {
 			$("#training_check").html(click_on_three)
 		} else {
 			experiment.post_test_slide();
-		};	
+		};
 	},
 
 	// Tests if the answers to the posttest were provided fully
@@ -355,8 +385,8 @@ var experiment = {
    // FINISHED BUTTON CHECKS EVERYTHING AND THEN ENDS
     check_finished: function() {
 		if (document.getElementById('about').value.length < 1) {
-		    $("#checkMessage").html('<font color="red">' + 
-				       'Please make sure you have answered all the questions!' + 
+		    $("#checkMessage").html('<font color="red">' +
+				       'Please make sure you have answered all the questions!' +
 				       '</font>');
 		} else {
 		    experiment.about = document.getElementById("about").value;
@@ -376,11 +406,11 @@ var experiment = {
 		}
     },
 
-    // END FUNCTION 
+    // END FUNCTION
     end: function () {
     	showSlide("finished");
     	setTimeout(function () {
 		turk.submit(experiment);
-        }, 500); 
+        }, 500);
     }
 }

@@ -1,5 +1,5 @@
 // ---------------- 2. STIMULUS SETUP ------------------
-// Parameters and Stimulus Setup 
+// Parameters and Stimulus Setup
 
 // Defining the parameters for the study:
 // when all the required answers are given this is 1, and the experiment can advance or be submited
@@ -19,8 +19,8 @@ var skip_check = 0;
 // 2 provides descriptions of the qualities of each of the quadrilaterals.
 // 3 active learning: Participant can click on any of the 12 example. Turns blue if shape_of_focus, red otherwise
 // 4 Passive learning condition: few boxes get highlighted and participant is required to click on the highlighted boxes, a teacher says "these are parallelograms", etc.
-// 5 Baseline condition: You present the same layout as in 3 and 4. But no highlighting or anything. 
-//var training_regime = 4;
+// 5 Baseline condition: You present the same layout as in 3 and 4. But no highlighting or anything.
+// 6 Active teaching: based on pretest answers, select the shape of focus. otherwise the same as passive learning
 var training_regime = random(3, 4);
 
 // Number of examples to show. This is specifically for the case of training_regime == 3. If training_regime == 4
@@ -28,11 +28,12 @@ var training_regime = random(3, 4);
 var examples_to_show = 3;
 
 
-// Shape of focus for teaching: 
+// Shape of focus for teaching:
 //  0 -> squares
 //  1 -> rectangles
 //  2 -> rhombuses
 //  3 -> parallelograms
+// this does not affect condition 6
 var to_choose_from = [1, 2, 3];
 var shape_of_focus = choose_from(to_choose_from);
 //var shape_of_focus = 3;
@@ -119,20 +120,20 @@ for (var i = 0; i < shapes.length; i++) {
     }
 }
 
-// Permuted arrangement 
+// Permuted arrangement
 var permutations = [];
 for (var i = 0; i < questions.length; i++) {
     permutations.push(i);
 }
+
 if (questions_permuted == 1) {
     permutations = shuffle(permutations);
 }
 
 var permuted_abreviations = [];
 for (var i = 0; i < questions.length; i ++) {
-    permuted_abreviations.push(shape_abreviations[permutations[i]])
+    permuted_abreviations.push(shape_abreviations[permutations[i]]);
 }
-
 
 // All of the radial buttons
 var pretest_radials = [["q0_0_yes", "q0_0_no"], ["q0_1_yes", "q0_1_no"], ["q0_2_yes", "q0_2_no"], ["q0_3_yes", "q0_3_no"],
@@ -143,7 +144,7 @@ var posttest_radials = [["q1_0_yes", "q1_0_no"], ["q1_1_yes", "q1_1_no"], ["q1_2
 ["q1_4_yes", "q1_4_no"], ["q1_5_yes", "q1_5_no"], ["q1_6_yes", "q1_6_no"], ["q1_7_yes", "q1_7_no"], ["q1_8_yes", "q1_8_no"],
 ["q1_9_yes", "q1_9_no"], ["q1_10_yes", "q1_10_no"], ["q1_11_yes", "q1_11_no"]];
 
-// Bootstrap button ids 
+// Bootstrap button ids
 var pretest_bootstrap = [];
 for (var i = 0; i < questions.length; i++) {
     pretest_bootstrap.push("pretest_" + String(i));
@@ -186,22 +187,6 @@ if (training_regime == 1) {
 
 
 // Teacher says the following facts:
-var teacher_facts = [" For a given angle in a rhombus, its opposite angle is the same", " All of the sides of a rhombus have the same length", 
+var teacher_facts = [" For a given angle in a rhombus, its opposite angle is the same", " All of the sides of a rhombus have the same length",
 " A square has four sides of equal length, and four 90 degree angles", " The angles of a rectangle are all 90 degree, and opposite sides have the same length",
 " The opposite sides of a parallelogram are parallel", " A parallelogram can have 4 equal sides"];
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
