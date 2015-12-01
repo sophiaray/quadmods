@@ -25,7 +25,16 @@ showSlide("instructions");
 //		1) It collects the variables that will be delivered to Turk at the end of the experiment
 //		2) It hall all the functions that change the visual aspect of the experiment such as showing images, etc.
 
-var experiment = {
+shape_pairs = []
+for (shape1 of shapes) {
+  for (shape2 of shapes) {
+    if (shape1 != shape2){
+      shape_pairs.push([shape1, shape2])
+    }
+  }
+}
+
+exp = {
   // These variables are the ones that will be sent to Turk at the end.
   // The first batch, however, is set determined by the experiment conditions
   // and therefore should not be affected by the decisions made by the experimental subject.
@@ -68,56 +77,64 @@ var experiment = {
 	examples_to_show: examples_to_show,
 	shape_of_focus: shape_of_focus,
 
-	// Bootstrap testing function
-	pre_test_slide: function() {
-		if (window.self == window.top | turk.workerId.length > 0) {
-			var initial_questions = "Let's start with some questions. <br> Please answer yes or no on each of the questions: <br><br>";
-			initial_questions += '<table align="center">';
-			for (var i = 0; i < questions.length; i++) {
-				initial_questions += "<tr><td>";
-				var perm_index = permutations[i];
-				initial_questions += questions[perm_index];
-				initial_questions += " &nbsp &nbsp </td><td>";
-				initial_questions += "<div class='btn-group' data-toggle='buttons-checkbox' id=" + pretest_bootstrap[i] + ">";
-		        initial_questions += "<button type='button' class='btn btn-primary' data-value='0' onclick ='experiment.boostrap_pre_button_select(\"pretest_" + String(i) +"\", 0, " + String(i) +  ")'>Yes</button>";
-		        initial_questions += "<button type='button' class='btn btn-danger' data-value='1' onclick ='experiment.boostrap_pre_button_select(\"pretest_" + String(i) +"\", 1,  " + String(i) +  ")'>No</button>";
-		        initial_questions += "</div> <br>";
-		        initial_questions += "</td></tr>";
-			}
-			initial_questions += "</table>";
-			$("#pre_test_questions").html(initial_questions);
-			showSlide("pre_test");
-		}
-	},
+	relational_slide: function(test_id) {
+    question_html = ""
+    for (pair of _.shuffle(shape_pairs)) {
+      shape1 = pair[0]; shape2 = pair[1]
+      if (shape1 != shape2) {
+        q_id = `r_${test_id}_${shape1}_${shape2}`
+        question_html += `<tr> <td>Are all ${shape1} also ${shape2}?</td> <td> <div id="${q_id}" class="btn-group" data-toggle="buttons-checkbox" data-value = ""> <button class="btn btn-primary" onclick="$( '#${q_id} button' ).removeClass( 'active' )" data-value="true" type="button">Yes</button> <button class="btn btn-danger" onclick="$( '#${q_id} button' ).removeClass( 'active' )" data-value="false" type="button">No</button> </div> </td> </tr>`
+      }
+    }
+    relational_html = `Let's start with some questions. <br> Please answer yes or no on each of the questions: <br> <br> <table align="center"> ${question_html} </table>`
+    $(`#relational_${test_id}_questions`).html(relational_html)
+    showSlide(`relational_${test_id}`)
+  },
 
-  // logic to display the slide
-  entity_pretest_slide: function() {
+  relational_answers: function (test_id) {
+    answers = []
+    for (pair in shape_pairs) {
+      shape1 = pair[0]; shape2 = pair[1]
+      answers.push($(`#r_${test_id}_${shape1}_${shape2} .active`).attr('data-value'))
+    }
+  },
+
+  relational_close: function () {
+    exp.r_pretest_response = exp.relational_answers("pretest")
+    exp.r_posttest_response = exp.relational_answers("posttest")
+  },
+
+  entity_slide: function(test_id) {
     question_html = ""
     for (q_shape of _.shuffle(singular_shapes)) {
       answer_html = ""
-      for (a_shape of _.shuffle(singular_shapes)){
-        a_id = `entity1_${q_shape}_${a_shape}`
+      for (a_shape of _.shuffle(singular_shapes)) {
+        a_id = `e_${test_id}_${q_shape}_${a_shape}`
         a_img_src = `shapes/${a_shape}_${_.random(1,3)}.png`
         answer_html += `<td> <img id="${a_id}" class="withoutHover objTable" width="100px" height="100px" src="${a_img_src}" onclick="$('#${a_id}').toggleClass('highlighted')"> </td>`
       }
       question_html += `<br> Which is a ${q_shape}?" <br> <table align="center"> <tr> ${answer_html} </tr> </table>`
     }
-    pretest2_html = `In the following questions please select <i>all</i> correct answers. <br> ${question_html} `
-    $("#entity_pretest_questions").html(pretest2_html)
-    showSlide("pre_test2")
+    entity_html = `In the following questions please select <i>all</i> correct answers. <br> ${question_html} `
+    $(`#entity_${test_id}_questions`).html(entity_html)
+    showSlide(`entity_${test_id}`)
   },
 
-  entity_pretest_close: function(){
+  entity_answers: function (test_id) {
     answers = []
     for (q_shape of singular_shapes) {
       row_answers = []
       for (a_shape of singular_shapes) {
-        row_answers.push( $(`#entity1_${q_shape}_${a_shape}`).hasClass("highlighted") )
+        row_answers.push( $(`#e_${test_id}_${q_shape}_${a_shape}`).hasClass("highlighted") )
       }
       answers.push(row_answers)
     }
-    experiment.entity_pre_answers = answers
-    experiment.training_slide()
+    return answers
+  },
+
+  entity_close: function(){
+    exp.e_pretest_response = exp.entity_answers("pretest")
+    exp.e_posttest_response = exp.entity_answers("posttest")
   },
 
 
@@ -162,7 +179,7 @@ var experiment = {
 			for (i = 0; i < 4; i++) {
 				training_html += '<tr>';
 				for (j = 0; j < 3; j++) {
-					training_html += '<td><img width=100px height=100px class="unchosen objTable" id="tdchoice' + String(i) + '_' + String(j) + '"  onclick="experiment.guess_this_shape(' + String(i) + ',' + String(j) + ')" src=shapes/' + all_shapes[i][j] + '></td>';
+					training_html += '<td><img width=100px height=100px class="unchosen objTable" id="tdchoice' + String(i) + '_' + String(j) + '"  onclick="exp.guess_this_shape(' + String(i) + ',' + String(j) + ')" src=shapes/' + all_shapes[i][j] + '></td>';
 				}
 				training_html += '</tr>';
 			}
@@ -180,7 +197,7 @@ var experiment = {
 			for (i = 0; i < 4; i++) {
 				training_html += '<tr>';
 				for (j = 0; j < 3; j++) {
-					training_html += '<td><img width=100px height=100px class="withoutHover objTable" id="tdchoice' + String(i) + '_' + String(j) + '"  onclick="experiment.select_highlighted_shape(' + String(i) + ',' + String(j) + ')" src=shapes/' + all_shapes[i][j] + '></td>';
+					training_html += '<td><img width=100px height=100px class="withoutHover objTable" id="tdchoice' + String(i) + '_' + String(j) + '"  onclick="exp.select_highlighted_shape(' + String(i) + ',' + String(j) + ')" src=shapes/' + all_shapes[i][j] + '></td>';
 				}
 				training_html += '</tr>';
 			}
@@ -206,7 +223,7 @@ var experiment = {
 
 		// After instantiation
 		if (training_regime == 4) {
-			experiment.highlight_boxes();
+			exp.highlight_boxes();
 		}
 	},
 
@@ -226,8 +243,8 @@ var experiment = {
 			post_questions += questions[perm_index];
 			post_questions += " &nbsp &nbsp </td><td>";
 			post_questions += "<div class='btn-group' data-toggle='buttons-checkbox' id=" + posttest_bootstrap[i] + ">";
-	        post_questions += "<button type='button' class='btn btn-primary' data-value='0' onclick ='experiment.boostrap_post_button_select(\"posttest_" + String(i) +"\", 0, " + String(i) +  ")'>Yes</button>";
-	        post_questions += "<button type='button' class='btn btn-danger' data-value='1' onclick ='experiment.boostrap_post_button_select(\"posttest_" + String(i) +"\", 1,  " + String(i) +  ")'>No</button>";
+	        post_questions += "<button type='button' class='btn btn-primary' data-value='0' onclick ='exp.boostrap_post_button_select(\"posttest_" + String(i) +"\", 0, " + String(i) +  ")'>Yes</button>";
+	        post_questions += "<button type='button' class='btn btn-danger' data-value='1' onclick ='exp.boostrap_post_button_select(\"posttest_" + String(i) +"\", 1,  " + String(i) +  ")'>No</button>";
 	        post_questions += "</div> <br>";
 		    post_questions += "</td></tr>";
 		};
@@ -247,11 +264,10 @@ var experiment = {
 		// De-activating all of the buttons but the selected one
 		var referent = "#" + group_id + " button";
 		$(referent).removeClass("active");
-    	var this_index = permutations.indexOf(i);
-    	experiment.pretest_responses_by_presented_order[i] = button_val;
-    	experiment.pretest_responses[this_index] = button_val;
+  	var this_index = permutations.indexOf(i);
+  	exp.pretest_responses_by_presented_order[i] = button_val;
+  	exp.pretest_responses[this_index] = button_val;
 	},
-
 
 
 	// Managing the bootstrap buttons
@@ -260,8 +276,8 @@ var experiment = {
 		var referent = "#" + group_id + " button";
 		$(referent).removeClass("active");
     	var this_index = permutations.indexOf(i);
-    	experiment.posttest_responses_by_presented_order[i] = button_val;
-    	experiment.posttest_responses[this_index] = button_val;
+    	exp.posttest_responses_by_presented_order[i] = button_val;
+    	exp.posttest_responses[this_index] = button_val;
 	},
 
 
@@ -341,7 +357,7 @@ var experiment = {
 	first_test_check: function() {
 		var one_missing = 0;
 		for (var i = 0; i < questions.length; i++) {
-			answer_to_i = experiment.pretest_responses[i];
+			answer_to_i = exp.pretest_responses[i];
 	    	if (answer_to_i == -1) {
 	    		one_missing = 1;
 	    	}
@@ -350,7 +366,7 @@ var experiment = {
     		var answer_all_message = '<font color="red">Please answer all the questions.</font>';
     		$("#pre_test_check").html(answer_all_message);
     	} else {
-    		experiment.training_slide();
+    		exp.training_slide();
     	};
 	},
 
@@ -360,7 +376,7 @@ var experiment = {
 			var click_on_three = '<font color="red">Please click on three shapes.</font>';
 			$("#training_check").html(click_on_three)
 		} else {
-			experiment.post_test_slide();
+			exp.post_test_slide();
 		};
 	},
 
@@ -368,7 +384,7 @@ var experiment = {
 	second_test_check: function() {
 		var one_missing = 0;
 		for (var i = 0; i < questions.length; i++) {
-			answer_to_i = experiment.posttest_responses[i];
+			answer_to_i = exp.posttest_responses[i];
 	    	if (answer_to_i == -1) {
 	    		one_missing = 1;
 	    	}
@@ -377,7 +393,7 @@ var experiment = {
     		var answer_all_message = '<font color="red">Please answer all the questions.</font>';
     		$("#post_test_check").html(answer_all_message);
     	} else {
-    		experiment.final_slide();
+    		exp.final_slide();
     	};
 	},
 
@@ -389,20 +405,20 @@ var experiment = {
 				       'Please make sure you have answered all the questions!' +
 				       '</font>');
 		} else {
-		    experiment.about = document.getElementById("about").value;
-		    experiment.comment = document.getElementById("comments").value;
-		    experiment.age = document.getElementById("age").value;
-		    experiment.gender = document.getElementById("gender").value;
+		    exp.about = document.getElementById("about").value;
+		    exp.comment = document.getElementById("comments").value;
+		    exp.age = document.getElementById("age").value;
+		    exp.gender = document.getElementById("gender").value;
 
-		    experiment.guesses = guessed_shapes;
-		    experiment.training_time = times[1] - times[0];
+		    exp.guesses = guessed_shapes;
+		    exp.training_time = times[1] - times[0];
 		    showSlide("finished");
 
 		    // HERE you can performe the needed boolean logic to properly account for the target_filler_sequence possibilities.
 		    // In other words, here you can check whether the choice is correct depending on the nature of the trial.
 
 
-		    experiment.end();
+		    exp.end();
 		}
     },
 
