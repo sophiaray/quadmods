@@ -11,7 +11,7 @@ var questions_permuted = 1;
 
 // Skip the checks/tests for particpants' answers (for debugging mostly)
 // 0 means no skip, 1 means it skips
-var skip_check = 0;
+var skip_check = 1;
 
 // Training regime
 // 0 delivers an uninformative table of examples.
@@ -21,7 +21,10 @@ var skip_check = 0;
 // 4 Passive learning condition: few boxes get highlighted and participant is required to click on the highlighted boxes, a teacher says "these are parallelograms", etc.
 // 5 Baseline condition: You present the same layout as in 3 and 4. But no highlighting or anything.
 // 6 Active teaching: based on pretest answers, select the shape of focus. otherwise the same as passive learning
-var training_regime = random(3, 4);
+var block = 1;
+var num_blocks = 2;
+var training_conditions = ["active_passive", "passive_active"]
+var training_condition = training_conditions[random(0,1)];
 
 // Number of examples to show. This is specifically for the case of training_regime == 3. If training_regime == 4
 // then you control the number of examples by editing the highlighted_boxes, which determines the specific examples used.
@@ -37,8 +40,6 @@ var examples_to_show = 3;
 var to_choose_from = [1, 2, 3];
 var shape_of_focus = choose_from(to_choose_from);
 //var shape_of_focus = 3;
-
-
 
 
 
@@ -61,31 +62,21 @@ if (shape_of_focus == 3) {
 
 
 
-
-
-
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Initialization of the variables that track the responses of users:  Global tracking variables (just a couple).
 // In these cases, 0 means yes, 1 means no, and -1 means "answer not provided"
 // Unless skip_check is 1, the values cannot be -1 when they are submitted to Turk.
-var pretest_answers = [];
+var r_pretest_answers = [];
 for (var i = 0; i < 12; i++) {
-    pretest_answers.push(-1);
-}
-var pretest_answers_by_order = [];
-for (var i = 0; i < 12; i++) {
-    pretest_answers_by_order.push(-1);
+    r_pretest_answers.push(-1);
 }
 
 
-var posttest_answers = [];
+var r_posttest_answers = [];
 for (var i = 0; i < 12; i++) {
-    posttest_answers.push(-1);
+    r_posttest_answers.push(-1);
 }
-var posttest_answers_by_order = [];
-for (var i = 0; i < 12; i++) {
-    posttest_answers_by_order.push(-1);
-}
+
 
 // In case of training regime 3, keeps track of the number of examples clicked/revealed/tried
 var examples_clicked = 0;
@@ -144,17 +135,6 @@ var posttest_radials = [["q1_0_yes", "q1_0_no"], ["q1_1_yes", "q1_1_no"], ["q1_2
 ["q1_4_yes", "q1_4_no"], ["q1_5_yes", "q1_5_no"], ["q1_6_yes", "q1_6_no"], ["q1_7_yes", "q1_7_no"], ["q1_8_yes", "q1_8_no"],
 ["q1_9_yes", "q1_9_no"], ["q1_10_yes", "q1_10_no"], ["q1_11_yes", "q1_11_no"]];
 
-// Bootstrap button ids
-var pretest_bootstrap = [];
-for (var i = 0; i < questions.length; i++) {
-    pretest_bootstrap.push("pretest_" + String(i));
-}
-
-var posttest_bootstrap = [];
-for (var i = 0; i < questions.length; i++) {
-    posttest_bootstrap.push("posttest_" + String(i));
-}
-
 
 
 // Seting up the variables for the training slide.
@@ -179,10 +159,9 @@ var isShape = [isSquare, isRectanlge, isRhombus, isParallelogram];
 
 
 var example_list = uninformative_training;
-if (training_regime == 1) {
+if (training_condition == "uninformative_training") {
     example_list = informative_training;
 }
-
 
 
 

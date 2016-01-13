@@ -8,7 +8,7 @@ Here the images used in the experiment are loaded in two arrays.
 The first is base_image_pl, which stores the "underlying" or base images
 which will then be modified with props stored in the props_image_pl Array.
 
-NOTE: Unfortunately the number of variations for each type of object is hardoded.
+NOTE: Unfortunately the number of variations for each type of object is hardcoded.
 To make the code more usable it will be necessary to
 */
 
@@ -44,16 +44,14 @@ exp = {
   permutations_used: permutations,
 
   // Pre-test answers
-  pretest_responses: pretest_answers,
-  pretest_responses_by_presented_order: pretest_answers_by_order,
+  r_pretest_answers,
 
   // Post-test answers
-  posttest_responses: posttest_answers,
-  posttest_responses_by_presented_order: posttest_answers_by_order,
+  r_posttest_answers,
 
-  // Information to reconstruct
-  order_of_shapes: shape_abreviations,
-  order_as_presented: permuted_abreviations,
+  // Presentation order
+  r_pretest_order_as_presented: [],
+  r_posttest_order_as_presented: [],
 
 
   // Shapes guessed
@@ -73,35 +71,54 @@ exp = {
 	all_answers_provided: all_answers_provided,
 	questions_permuted: questions_permuted,
 	skip_check: skip_check,
-	training_regime: training_regime,
+	training_condition: training_condition,
 	examples_to_show: examples_to_show,
 	shape_of_focus: shape_of_focus,
 
+
+	//build relational slide for both pretest and posttest
 	relational_slide: function(test_id) {
-    question_html = ""
-    for (pair of _.shuffle(shape_pairs)) {
-      shape1 = pair[0]; shape2 = pair[1]
-      if (shape1 != shape2) {
-        q_id = `r_${test_id}_${shape1}_${shape2}`
-        question_html += `<tr> <td>Are all ${shape1} also ${shape2}?</td> <td> <div id="${q_id}" class="btn-group" data-toggle="buttons-checkbox" data-value = ""> <button class="btn btn-primary" onclick="$( '#${q_id} button' ).removeClass( 'active' )" data-value="true" type="button">Yes</button> <button class="btn btn-danger" onclick="$( '#${q_id} button' ).removeClass( 'active' )" data-value="false" type="button">No</button> </div> </td> </tr>`
-      }
+		r_pretest_shuffled = _.shuffle(shape_pairs); // shuffle shape pairs to randmoize presentation order	
+	    question_html = ""
+	    for (pair of r_pretest_shuffled) {
+	      shape1 = pair[0]; shape2 = pair[1]
+	      if (shape1 != shape2) {
+	        q_id = `r_${test_id}_${shape1}_${shape2}`
+	        exp.r_pretest_order_as_presented.push(q_id); // store presentation order 
+	        question_html += 
+		        `<tr> 
+		        	<td>Are all ${shape1} also ${shape2}?</td> 
+		        	<td> 
+		        		<label class="btn btn-default"><input type="radio" name="${q_id}" value="yes"/> Yes</label> 
+		        		<label class="btn btn-default"><input type="radio" name="${q_id}" value="no"/> No</label>  
+		        	</td> 
+		        </tr>`
+	      }
     }
-    relational_html = `Let's start with some questions. <br> Please answer yes or no on each of the questions: <br> <br> <table align="center"> ${question_html} </table>`
+    var relational_html = `Let's start with some questions. <br> Please answer yes or no on each of the questions: <br> <br> <table align="center"> ${question_html} </table>`;
+    
     $(`#relational_${test_id}_questions`).html(relational_html)
     showSlide(`relational_${test_id}`)
   },
 
   relational_answers: function (test_id) {
+  	// get participants answers in the order they gave them
     answers = []
     for (pair in shape_pairs) {
-      shape1 = pair[0]; shape2 = pair[1]
-      answers.push($(`#r_${test_id}_${shape1}_${shape2} .active`).attr('data-value'))
+    	if (test_id == "pretest") {
+    		current_pair = exp.r_pretest_order_as_presented[pair]; 
+    		answers.push($(`input:radio[name=${current_pair}]:checked`).val())
+    	} else {
+    		current_pair = exp.r_posttest_order_as_presented[pair]; 
+    		answers.push($(`input:radio[name=${current_pair}]:checked`).val())
+    	}
     }
+    return answers
   },
 
   relational_close: function () {
-    exp.r_pretest_response = exp.relational_answers("pretest")
-    exp.r_posttest_response = exp.relational_answers("posttest")
+    exp.r_pretest_answers = exp.relational_answers("pretest")
+    exp.r_posttest_answers = exp.relational_answers("posttest")
   },
 
   entity_slide: function(test_id) {
@@ -133,8 +150,8 @@ exp = {
   },
 
   entity_close: function(){
-    exp.e_pretest_response = exp.entity_answers("pretest")
-    exp.e_posttest_response = exp.entity_answers("posttest")
+    exp.e_pretest_responses = exp.entity_answers("pretest")
+    exp.e_posttest_responses = exp.entity_answers("posttest")
   },
 
 
@@ -143,6 +160,16 @@ exp = {
 		startTime = new Date();
 		times.push(startTime);
 		var training_html = "";
+
+		// set up training slide based on block and condition
+
+		if (training_condition == "active_passive" && block == 1) {
+				training_regime = 3; // active learning
+			} else if (training_condition == "passive_active" && block == 2) {
+				training_regime = 3; // active learning
+			} else {
+				training_regime = 4; // passive learning
+			}
 
 		if (training_regime < 2) {
 			training_html += "<center><br> We're going to learn about all the shapes you just ";
@@ -217,7 +244,9 @@ exp = {
 			}
 			training_html += '</table>'
 		}
+		
 
+		
 		$("#training_examples").html(training_html);
 		showSlide("training");
 
@@ -226,58 +255,39 @@ exp = {
 			exp.highlight_boxes();
 		}
 	},
+	
 
+	post_test_slide: function(test_id) {
 
+    	post_test_question_html = ""
+    	r_post_test_shuffled = _.shuffle(shape_pairs);
 
-
-	post_test_slide: function() {
-
-
-		endTime = new Date();
-		times.push(endTime);
-		var post_questions = "Please answer these yes or no questions: <br><br>";
-		post_questions += '<table align="center">';
-		for (var i = 0; i < questions.length; i++) {
-			post_questions += "<tr><td>";
-			var perm_index = permutations[i];
-			post_questions += questions[perm_index];
-			post_questions += " &nbsp &nbsp </td><td>";
-			post_questions += "<div class='btn-group' data-toggle='buttons-checkbox' id=" + posttest_bootstrap[i] + ">";
-	        post_questions += "<button type='button' class='btn btn-primary' data-value='0' onclick ='exp.boostrap_post_button_select(\"posttest_" + String(i) +"\", 0, " + String(i) +  ")'>Yes</button>";
-	        post_questions += "<button type='button' class='btn btn-danger' data-value='1' onclick ='exp.boostrap_post_button_select(\"posttest_" + String(i) +"\", 1,  " + String(i) +  ")'>No</button>";
-	        post_questions += "</div> <br>";
-		    post_questions += "</td></tr>";
-		};
-		post_questions += "</table>";
-		$("#post_test_questions").html(post_questions);
-		showSlide("post_test");
-	},
+	    for (pair of r_post_test_shuffled) {
+	      shape1 = pair[0]; shape2 = pair[1]
+	      if (shape1 != shape2) {
+	        q_id = `r_${test_id}_${shape1}_${shape2}`
+	        exp.r_posttest_order_as_presented.push(q_id); // store presentation order
+	        post_test_question_html += 
+		        `<tr> 
+		        	<td>Are all ${shape1} also ${shape2}?</td> 
+		        	<td> 
+		        		<label class="btn btn-default"><input type="radio" name="${q_id}" value="yes"/> Yes</label> 
+		        		<label class="btn btn-default"><input type="radio" name="${q_id}" value="no"/> No</label>  
+		        	</td> 
+		        </tr>`
+	      }
+	    }
+   		
+   		var post_test_html = `Let's start with some questions. <br> Please answer yes or no on each of the questions: <br> <br> <table align="center"> ${post_test_question_html} </table>`;
+    
+    	$(`#post_test_questions`).html(post_test_html)
+    	
+    	showSlide("post_test")
+  },
 
 
 	final_slide: function() {
 		showSlide("final_questions");
-	},
-
-
-	// Managing the bootstrap buttons
-	boostrap_pre_button_select: function(group_id, button_val, i) {
-		// De-activating all of the buttons but the selected one
-		var referent = "#" + group_id + " button";
-		$(referent).removeClass("active");
-  	var this_index = permutations.indexOf(i);
-  	exp.pretest_responses_by_presented_order[i] = button_val;
-  	exp.pretest_responses[this_index] = button_val;
-	},
-
-
-	// Managing the bootstrap buttons
-	boostrap_post_button_select: function(group_id, button_val, i) {
-		// De-activating all of the buttons but the selected one
-		var referent = "#" + group_id + " button";
-		$(referent).removeClass("active");
-    	var this_index = permutations.indexOf(i);
-    	exp.posttest_responses_by_presented_order[i] = button_val;
-    	exp.posttest_responses[this_index] = button_val;
 	},
 
 
@@ -353,11 +363,14 @@ exp = {
 	},
 
 
-	// Tests if the answers to the pretest were provided fully
-	first_test_check: function() {
+	// Tests if the answers to the relational pretest were provided fully
+	first_test_check: function(test_id) {
+		// call function to get radio button values
+		exp.relational_close();
+		// check if any are missing
 		var one_missing = 0;
 		for (var i = 0; i < questions.length; i++) {
-			answer_to_i = exp.pretest_responses[i];
+			answer_to_i = exp.r_pretest_answers[i];
 	    	if (answer_to_i == -1) {
 	    		one_missing = 1;
 	    	}
@@ -366,25 +379,38 @@ exp = {
     		var answer_all_message = '<font color="red">Please answer all the questions.</font>';
     		$("#pre_test_check").html(answer_all_message);
     	} else {
-    		exp.training_slide();
+    		exp.entity_slide('pretest') 
     	};
 	},
 
-
+	// check if participant actually completed the training 
 	training_test_check: function() {
 		if (((training_regime == 3 || training_regime == 4)  && examples_clicked < examples_to_show) && skip_check == 0) {
 			var click_on_three = '<font color="red">Please click on three shapes.</font>';
 			$("#training_check").html(click_on_three)
 		} else {
-			exp.post_test_slide();
+			if (block == 1) {
+				block++
+				exp.relational_slide("pretest"); // if in first block, then you go to pretest ("test 1")
+			} else {
+				// get end of training time
+				endTime = new Date();
+				times.push(endTime);
+				// continue experiment
+				exp.post_test_slide("posttest");
+			};
 		};
 	},
 
-	// Tests if the answers to the posttest were provided fully
+	// Tests if the answers to the relational posttest were provided fully. If yes, continue to entity posttest
 	second_test_check: function() {
+		// call function to get radio button values
+		exp.relational_close();
+
+		//check to see if any are missing
 		var one_missing = 0;
 		for (var i = 0; i < questions.length; i++) {
-			answer_to_i = exp.posttest_responses[i];
+			answer_to_i = exp.r_posttest_answers[i];
 	    	if (answer_to_i == -1) {
 	    		one_missing = 1;
 	    	}
@@ -393,7 +419,7 @@ exp = {
     		var answer_all_message = '<font color="red">Please answer all the questions.</font>';
     		$("#post_test_check").html(answer_all_message);
     	} else {
-    		exp.final_slide();
+    		exp.entity_slide('posttest');
     	};
 	},
 
@@ -426,7 +452,7 @@ exp = {
     end: function () {
     	showSlide("finished");
     	setTimeout(function () {
-		turk.submit(experiment);
+		turk.submit(exp);
         }, 500);
     }
 }
