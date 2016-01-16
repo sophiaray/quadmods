@@ -101,8 +101,13 @@ This stuff will vary by experiment.
 }
 
 
+#training_examples {
+  text-align: center; 
+}
 
-
+#between_training_html {
+  text-align: center; 
+}
 
 
 #logo-text {

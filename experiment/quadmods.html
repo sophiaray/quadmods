@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Geometry - yes or no</title>
+    <title>Shape Game</title>
 
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -35,11 +35,11 @@
     <div class="slide" id="instructions">
       <img src="css/images/stanford.png" alt="Stanford University">
       <p id='logo-text'>Stanford Language and Cognition Lab</p>
-      <p class="block-text">In this experiment, we're interested in your judgments about the membership of shapes into geometric classes. First you will answer some questions, then you will be shown a series of examples, and then you will be asked to answer additional question. It should take about 5 minutes. </p>
+      <p class="block-text">In this game, we're interested in your judgments about different kinds of shapes. First you will answer some questions, then you will be shown a series of examples to help you learn about the shapes, and then you will be asked to answer some more questions. The task should take about 5 minutes or less. </p>
 
       <!-- If there is a familiarization stage then the next line should be active, otherwise the one after that should be active-->
       <!-- <button type="button" onClick="this.blur(); exp.relational_slide('pretest')">Start</button>-->
-       <button type="button" onClick="this.blur(); exp.training_slide()">Start</button>
+       <button type="button" onClick="this.blur(); exp.relational_slide('pretest')">Start</button>
 
 
       <p class="block-text"> <b> (Note: you won't be able to preview this HIT before accepting it because it's so short.)
@@ -66,9 +66,9 @@
 
     <!-- Entity Pretest-->
     <div class = "slide" id = "entity_pretest">
-      <table align="center"><tr><td align="center">
+      <table align="center" id="pretest_entity_table"><tr><td align="center">
       <div id ="entity_pretest_questions"> </div> <!-- questions dynamically built in javascript-->
-      <button type="button" id="entity_to_training" onClick="exp.entity_close(); exp.training_slide()">Next</button>
+      <button type="button" id="entity_to_training" onClick="exp.entity_close('pretest'); exp.training_slide()">Next</button>
       <div id="pre_test_check"> </div>
       </td></tr>
       </table>
@@ -79,6 +79,15 @@
       <div id = "training_examples"> </div>
       <table align="center"><tr><td align="center">
         <button type="button" id="training_to_posttest" onClick="exp.training_test_check()">Next</button>
+        <div id="training_check"> </div><!--dynamically built in javascript-->
+        </td></tr></table>
+    </div>
+
+    <!-- Between training blocks slide -->
+    <div class = "slide" id ="between_training">
+      <div id = "between_training_html"> </div>
+      <table align="center"><tr><td align="center">
+        <button type="button" id="between_training" onClick="exp.training_slide()">Next</button>
         <div id="training_check"> </div><!--dynamically built in javascript-->
         </td></tr></table>
     </div>
@@ -95,9 +104,9 @@
 
     <!-- Entity Posttest-->
     <div class = "slide" id = "entity_posttest">
-      <table align="center"><tr><td align="center">
+      <table align="center" id="posttest_entity_table"><tr><td align="center">
       <div id ="entity_posttest_questions"> </div> <!-- questions dynamically built in javascript-->
-      <button type="button" id="posttest_to_postest2" onClick="exp.entity_close(); exp.final_slide()">Next</button>
+      <button type="button" id="posttest_to_postest2" onClick="exp.entity_close('posttest'); exp.final_slide()">Next</button>
       <div id="post_test_check"> </div>
       </td></tr>
       </table>

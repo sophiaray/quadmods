@@ -11,7 +11,11 @@ var questions_permuted = 1;
 
 // Skip the checks/tests for particpants' answers (for debugging mostly)
 // 0 means no skip, 1 means it skips
-var skip_check = 1;
+var skip_check = 0;
+
+// Block information 
+var block = 0;
+var num_blocks = 2;
 
 // Training regime
 // 0 delivers an uninformative table of examples.
@@ -21,31 +25,43 @@ var skip_check = 1;
 // 4 Passive learning condition: few boxes get highlighted and participant is required to click on the highlighted boxes, a teacher says "these are parallelograms", etc.
 // 5 Baseline condition: You present the same layout as in 3 and 4. But no highlighting or anything.
 // 6 Active teaching: based on pretest answers, select the shape of focus. otherwise the same as passive learning
-var block = 1;
-var num_blocks = 2;
-var training_conditions = ["active_passive", "passive_active"]
-var training_condition = training_conditions[random(0,1)];
+var training_conditions = ["active_passive", "passive_active", "active_active", "passive_passive"]
+var numConditions = 4;
+
+try { 
+    var filename = "KM_quadmods_pilotA";
+    var condCounts = "3,3;4,3";
+    var xmlHttp = null;
+    xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", "https://langcog.stanford.edu/cgi-bin/KM/subject_equalizer_km/maker_getter.php?conds=" + condCounts + "&filename=" + filename, false );
+    xmlHttp.send( null );
+    var cond = xmlHttp.responseText; // For actual experimental runs
+} catch (e) {
+    var cond = random(2,numConditions-1); // if maker-getter fails, generate condition number randomly
+}
+
+
+var training_condition = training_conditions[cond];
+
 
 // Number of examples to show. This is specifically for the case of training_regime == 3. If training_regime == 4
 // then you control the number of examples by editing the highlighted_boxes, which determines the specific examples used.
 var examples_to_show = 3;
 
 
-// Shape of focus for teaching:
+// Shape of focus for training:
 //  0 -> squares
 //  1 -> rectangles
 //  2 -> rhombuses
 //  3 -> parallelograms
 // this does not affect condition 6
-var to_choose_from = [1, 2, 3];
-var shape_of_focus = choose_from(to_choose_from);
-//var shape_of_focus = 3;
-
-
+// var to_choose_from = [1, 2, 3];
+// var shape_of_focus = choose_from(to_choose_from);
+var shape_of_focus = 2; // just teach about rhombus
 
 
 // For the specfic case of training_regime = 4, you have to specify which shapes actually get highlighted.
-var highlighted_boxes = [];
+/*var highlighted_boxes= [];
 if (shape_of_focus == 0) {
     highlighted_boxes = [[0, 1], [1, 0], [3, 2]];
 }
@@ -57,8 +73,13 @@ if (shape_of_focus == 2) {
 }
 if (shape_of_focus == 3) {
     highlighted_boxes = [[2, 1], [1, 0], [3, 1]];
-}
+}*/
 
+// Randomly generate the shapes that get highlighted (examples) in the passive condition
+// 0-2 used because training table contains 3 columns; 0-3 used because training table contains 4 rows
+// checkExamples function ensures that each example is unique 
+var highlighted_boxes_block1 = checkExamples([[random(0,3), random(0,2)], [random(0,3), random(0,2)], [random(0,3), random(0,2)]]); 
+var highlighted_boxes_block2 = checkExamples([[random(0,3), random(0,2)], [random(0,3), random(0,2)], [random(0,3), random(0,2)]]);
 
 
 
@@ -71,12 +92,13 @@ for (var i = 0; i < 12; i++) {
     r_pretest_answers.push(-1);
 }
 
-
 var r_posttest_answers = [];
 for (var i = 0; i < 12; i++) {
     r_posttest_answers.push(-1);
 }
 
+var e_pretest_responses = [];
+var e_posttest_responses = [];
 
 // In case of training regime 3, keeps track of the number of examples clicked/revealed/tried
 var examples_clicked = 0;
@@ -87,6 +109,7 @@ var guessed_shapes = [];
 
 // Time variables
 var times = [];
+var exp_times = [];
 
 
 
@@ -146,7 +169,6 @@ var uninformative_training = [["square_1.png", "square_2.png"], ["rectangle_1.pn
 var informative_training = [["square_1.png", "square_2.png"], ["rectangle_1.png", "square_1.png"],
 ["square_2.png", "rhombus_2.png"], ["rhombus_1.png", "rectangle_2.png"]];
 
-
 var all_shapes = [["square_1.png", "square_2.png", "square_3.png"], ["rectangle_1.png", "rectangle_2.png", "rectangle_3.png"],
 ["rhombus_1.png", "rhombus_2.png", "rhombus_3.png"], ["parallelogram_1.png", "parallelogram_2.png", "parallelogram_3.png"]];
 
@@ -157,13 +179,11 @@ var isParallelogram = [1, 1, 1, 1];
 
 var isShape = [isSquare, isRectanlge, isRhombus, isParallelogram];
 
-
-var example_list = uninformative_training;
-if (training_condition == "uninformative_training") {
+// Here is where you set which training regime to use
+/*if (training_condition == "uninformative_training") {
     example_list = informative_training;
-}
-
-
+}*/
+var example_list = uninformative_training;
 
 // Teacher says the following facts:
 var teacher_facts = [" For a given angle in a rhombus, its opposite angle is the same", " All of the sides of a rhombus have the same length",

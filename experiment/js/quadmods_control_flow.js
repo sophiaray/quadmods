@@ -13,11 +13,6 @@ To make the code more usable it will be necessary to
 */
 
 
-
-
-
-
-
 showSlide("instructions");
 
 // The main experiment:
@@ -40,28 +35,39 @@ exp = {
   // and therefore should not be affected by the decisions made by the experimental subject.
 
 
-  // Order of questions
-  permutations_used: permutations,
+	// Order of questions
+	permutations_used: permutations,
 
-  // Pre-test answers
-  r_pretest_answers,
+	// Pre-test answers
+	r_pretest_answers,
+	e_pretest_responses,
 
-  // Post-test answers
-  r_posttest_answers,
+	// Post-test answers
+	r_posttest_answers,
+	e_posttest_responses,
 
-  // Presentation order
-  r_pretest_order_as_presented: [],
-  r_posttest_order_as_presented: [],
+	// Presentation order for relational tests
+	r_pretest_order_as_presented: [],
+	r_posttest_order_as_presented: [],
+
+	// Presentation order for entity tests
+	e_pretest_q_order_as_presented: [],
+	e_posttest_q_order_as_presented: [],
+	e_pretest_shape_order_as_presented: [],
+	e_posttest_shape_order_as_presented: [],
 
 
-  // Shapes guessed
-  guesses: [],
+	// Shapes guessed
+	guesses: [],
 
-  // Participant demo info
-  about: "",
-  comment: "",
+	// Participant demo info
+	about: "",
+	comment: "",
 	age: "",
 	gender: "",
+
+	// measuring time of experiment
+	exp_time: "",
 
 	// measuring time of training
 	training_time: "",
@@ -78,6 +84,11 @@ exp = {
 
 	//build relational slide for both pretest and posttest
 	relational_slide: function(test_id) {
+
+		if (test_id == "pretest") {
+			exp_times.push(new Date());
+		}
+
 		r_pretest_shuffled = _.shuffle(shape_pairs); // shuffle shape pairs to randmoize presentation order	
 	    question_html = ""
 	    for (pair of r_pretest_shuffled) {
@@ -95,7 +106,7 @@ exp = {
 		        </tr>`
 	      }
     }
-    var relational_html = `Let's start with some questions. <br> Please answer yes or no on each of the questions: <br> <br> <table align="center"> ${question_html} </table>`;
+    var relational_html = `Here are some questions testing your knowledge of quadrilaterals. <br> Please answer yes or no to each of the questions: <br> <br> <table align="center"> ${question_html} </table>`;
     
     $(`#relational_${test_id}_questions`).html(relational_html)
     showSlide(`relational_${test_id}`)
@@ -121,6 +132,17 @@ exp = {
     exp.r_posttest_answers = exp.relational_answers("posttest")
   },
 
+  entity_questions_log: function (shape_name, test_id, q_shape_name) {
+  	if (test_id == "pretest") {
+  		exp.e_pretest_shape_order_as_presented.push(shape_name);
+  		exp.e_pretest_q_order_as_presented.push(q_shape_name); 
+  	} else {
+  		exp.e_posttest_shape_order_as_presented.push(shape_name);
+  		exp.e_posttest_q_order_as_presented.push(q_shape_name); 
+  	}
+
+  },
+
   entity_slide: function(test_id) {
     question_html = ""
     for (q_shape of _.shuffle(singular_shapes)) {
@@ -128,30 +150,41 @@ exp = {
       for (a_shape of _.shuffle(singular_shapes)) {
         a_id = `e_${test_id}_${q_shape}_${a_shape}`
         a_img_src = `shapes/${a_shape}_${_.random(1,3)}.png`
-        answer_html += `<td> <img id="${a_id}" class="withoutHover objTable" width="100px" height="100px" src="${a_img_src}" onclick="$('#${a_id}').toggleClass('highlighted')"> </td>`
+        answer_html += `<td class="entity_response"> <img id="${a_id}" class="withoutHover objTable" width="100px" height="100px" src="${a_img_src}" onclick="$('#${a_id}').toggleClass('highlighted')"> </td>`
+        
+        // log order of presentation of both question and shapes for each entity question
+        exp.entity_questions_log(a_shape, test_id, q_shape); 
       }
       question_html += `<br> Which is a ${q_shape}?" <br> <table align="center"> <tr> ${answer_html} </tr> </table>`
     }
-    entity_html = `In the following questions please select <i>all</i> correct answers. <br> ${question_html} `
+    entity_html = `For the following questions please select <i>all</i> correct answers. <br> <b> Note: </b> You can select more than one shape for each question. <br> ${question_html} `
     $(`#entity_${test_id}_questions`).html(entity_html)
     showSlide(`entity_${test_id}`)
   },
 
   entity_answers: function (test_id) {
     answers = []
-    for (q_shape of singular_shapes) {
-      row_answers = []
-      for (a_shape of singular_shapes) {
-        row_answers.push( $(`#e_${test_id}_${q_shape}_${a_shape}`).hasClass("highlighted") )
-      }
-      answers.push(row_answers)
-    }
+
+	// loop over the images in the entity table to see which ones are highlighted
+    if (test_id == "pretest") {
+    	$('#pretest_entity_table .entity_response img').each(function() {
+	    	answers.push($(this).hasClass("highlighted"));   
+	 	});
+    } else {
+    	$('#posttest_entity_table .entity_response img').each(function() {
+	    	answers.push($(this).hasClass("highlighted"));   
+	 	});
+    };
+
     return answers
   },
 
-  entity_close: function(){
-    exp.e_pretest_responses = exp.entity_answers("pretest")
-    exp.e_posttest_responses = exp.entity_answers("posttest")
+  entity_close: function(test_id){
+  	if (test_id == "pretest") {
+  		exp.e_pretest_responses = exp.entity_answers(test_id);
+  	} else {
+  		exp.e_posttest_responses = exp.entity_answers();
+  	}
   },
 
 
@@ -159,22 +192,30 @@ exp = {
 		// record start time
 		startTime = new Date();
 		times.push(startTime);
+
+		// update block so we know what type of training slide to show
+  		block++  		
+
 		var training_html = "";
 
 		// set up training slide based on block and condition
 
-		if (training_condition == "active_passive" && block == 1) {
+		if (training_condition == "active_active") {
+			training_regime = 3; 
+		} else if (training_condition == "passive_passive") {
+			training_regime = 4;
+		} else if (training_condition == "active_passive" && block == 1) {
 				training_regime = 3; // active learning
-			} else if (training_condition == "passive_active" && block == 2) {
-				training_regime = 3; // active learning
-			} else {
-				training_regime = 4; // passive learning
-			}
+		} else if (training_condition == "passive_active" && block == 2) {
+			training_regime = 3; // active learning
+		} else {
+			training_regime = 4; // passive learning
+		}
 
 		if (training_regime < 2) {
-			training_html += "<center><br> We're going to learn about all the shapes you just ";
+			training_html += "<center><br> We are learning about all the shapes you just ";
 			training_html += "answered questions about. <br> Here are examples from each of the ";
-			training_html += "categories. Take a close look. <br> After you're done, you will be tested again on your knowledge. </center><br><br>";
+			training_html += "categories. Take a close look. <br> At the end of the task you will be tested again on your knowledge. </center><br><br>";
 			training_html += '<table align="center">';
 			for (i = 0; i < 4; i++) {
 				training_html += '<tr><td>' + shapes[i] + '</td>';
@@ -197,11 +238,18 @@ exp = {
 			training_html += '</table>'
 		}
 
+		// Active learning
 		// This training regime uses the CSS functionality of highlighting specific images to point out
 		// elements of a class of shapes.
 		if (training_regime == 3) {
-			training_html += "<br>We're going to learn about what a <b>" + singular_shapes[shape_of_focus] +  "</b> is. <br>Click on three of the shapes below to learn whether each one is a " + singular_shapes[shape_of_focus] +  " or not. <br>";
-			training_html +=  "If it's a <b>" + singular_shapes[shape_of_focus] +  "</b>, it'll turn <font color='blue'>blue</font> when you click it. If it isn't, it'll turn <font color='red'>red</font>. <br>Choose carefully so that you can learn as much as you can about " + shapes[shape_of_focus] +  ". After you're done, you will be tested again on your knowledge. <br><br>";
+
+			if (block == 1) {
+				training_html += "<br>We are learning about what a <b>" + singular_shapes[shape_of_focus] +  "</b> is, and <br> you will get a chance to select your own examples to help you learn. <br><br> Click on <b>three</b> of the shapes below to learn whether each one is a " + singular_shapes[shape_of_focus] +  " or not. <br><br>";
+			} else if (block == 2) {
+				training_html += "<br>We are going to continue learning about what a <b>" + singular_shapes[shape_of_focus] +  "</b> is, and <br> you will get a chance to select your own examples to help you learn. <br><br> Click on <b>three</b> of the shapes below to learn whether each one is a " + singular_shapes[shape_of_focus] +  " or not. <br><br>";
+			};
+
+			training_html +=  "If it's a <b>" + singular_shapes[shape_of_focus] +  "</b>, it'll turn <font color='blue'>blue</font> when you click it. If it isn't, it'll turn <font color='red'>red</font>. <br><br>Choose carefully so that you can learn as much as you can about " + shapes[shape_of_focus] +  ". <br> At the end of the task you will be tested again on your knowledge. <br><br>";
 			training_html += '<table align="center">';
 			for (i = 0; i < 4; i++) {
 				training_html += '<tr>';
@@ -215,12 +263,19 @@ exp = {
 
 		// Passive learning condition
 		if (training_regime == 4) {
-			training_html +=  "We're going to learn about what a <b>" + singular_shapes[shape_of_focus] +  "</b> is. <br>";
-			training_html +=  "On the basis of your responses, a teacher has chosen three examples to show you what <b>" + shapes[shape_of_focus] +  "</b> are. <br>";
-			training_html +=  " Click on the three shapes with the boxes around them to learn whether each one is a <b>"+ singular_shapes[shape_of_focus] + "</b> or not. <br>";
-			training_html += "If it's a <b>"+ singular_shapes[shape_of_focus] + "</b>, it'll turn <font color='blue'>blue</font> when you click it. If it isn't, it'll turn <font color='red'>red</font>.";
-			training_html +=  " After you're done, you will be tested again on your knowledge. <br>";
+
+			if (block == 1) {
+				training_html +=  "We are learning about what a <b>" + singular_shapes[shape_of_focus] +  "</b> is. <br><br>";
+			} else if (block == 2) {
+				training_html += "<br>We are going to continue learning about what a <b>" + singular_shapes[shape_of_focus] +  "</b> is. <br><br>";
+			};
+
+			training_html +=  "Here are <b>three</b> examples to show you what <b>" + shapes[shape_of_focus] +  "</b> are. <br><br>";
+			training_html +=  " Click on the <b>three</b> shapes with the boxes around them to learn whether each one is a <b>"+ singular_shapes[shape_of_focus] + "</b> or not. <br><br>";
+			training_html += "If it's a <b>"+ singular_shapes[shape_of_focus] + "</b>, it'll turn <font color='blue'>blue</font> when you click it. If it isn't, it'll turn <font color='red'>red</font>. <br>";
+			training_html +=  " At the end of the task you will be tested again on your knowledge. <br><br>";
 			training_html += '<table align="center">';
+
 			for (i = 0; i < 4; i++) {
 				training_html += '<tr>';
 				for (j = 0; j < 3; j++) {
@@ -228,6 +283,7 @@ exp = {
 				}
 				training_html += '</tr>';
 			}
+
 			training_html += '</table>'
 		}
 
@@ -252,7 +308,7 @@ exp = {
 
 		// After instantiation
 		if (training_regime == 4) {
-			exp.highlight_boxes();
+			exp.highlight_boxes(block);
 		}
 	},
 	
@@ -283,6 +339,24 @@ exp = {
     	$(`#post_test_questions`).html(post_test_html)
     	
     	showSlide("post_test")
+  },
+
+  between_training_slide: function(block) {
+  		
+  		var between_training_text = "";
+
+  		if (training_condition == "active_active") {
+  			between_training_text += "Next, you will get another chance to select your own examples to help you learn about what a <b>" + singular_shapes[shape_of_focus] +  "</b> is. <br><br>";
+  		} else if (training_condition == "passive_passive") {
+  			between_training_text += "Next, you will be given some more examples to help you learn about what a <b>" + singular_shapes[shape_of_focus] +  "</b> is. <br><br>";
+  		} else if (block == 1 && training_condition == "active_passive") {
+  			between_training_text += "Next, you will be given some examples to help you learn about what a <b>" + singular_shapes[shape_of_focus] +  "</b> is. <br><br>";
+  		} else {
+  			between_training_text += "Next, you will get a chance to select your own examples to help you learn about what a <b>" + singular_shapes[shape_of_focus] +  "</b> is. <br><br>";
+  		};
+
+  		$("#between_training_html").html(between_training_text);
+  		showSlide('between_training')		
   },
 
 
@@ -325,41 +399,74 @@ exp = {
 	},
 
 
-	highlight_boxes: function() {
-		var in_highlighted = 0;
-		for (i = 0; i < all_shapes.length; i++) {
-			for (j = 0; j < all_shapes[0].length; j++) {
-				for (ii = 0; ii <highlighted_boxes.length; ii++) {
-					if (highlighted_boxes[ii][0] == i && highlighted_boxes[ii][1] == j) {
-						$("#tdchoice" + String(i) + '_' + String(j)).addClass('highlighted');
+	highlight_boxes: function(block) {
+
+		if (block == 1) {
+
+			var in_highlighted = 0;
+			for (i = 0; i < all_shapes.length; i++) {
+				for (j = 0; j < all_shapes[0].length; j++) {
+					for (ii = 0; ii < highlighted_boxes_block1.length; ii++) {
+						if (highlighted_boxes_block1[ii][0] == i && highlighted_boxes_block1[ii][1] == j) {
+							$("#tdchoice" + String(i) + '_' + String(j)).addClass('highlighted');
+						}
 					}
 				}
 			}
-		}
 
+		} else {
+
+			var in_highlighted = 0;
+			for (i = 0; i < all_shapes.length; i++) {
+				for (j = 0; j < all_shapes[0].length; j++) {
+					for (ii = 0; ii < highlighted_boxes_block2.length; ii++) {
+						if (highlighted_boxes_block2[ii][0] == i && highlighted_boxes_block2[ii][1] == j) {
+							$("#tdchoice" + String(i) + '_' + String(j)).addClass('highlighted');
+						}
+					}
+				}
+			}
+
+		};
 
 	},
 
 	select_highlighted_shape: function(i, j) {
+
 		var in_highlighted = 0;
-		for (ii = 0; ii < highlighted_boxes.length; ii++) {
-			if (highlighted_boxes[ii][0] == i && highlighted_boxes[ii][1] == j) {
-				in_highlighted = 1;
+
+		if (block == 1) {
+
+			for (ii = 0; ii < highlighted_boxes_block1.length; ii++) {
+				if (highlighted_boxes_block1[ii][0] == i && highlighted_boxes_block1[ii][1] == j) {
+					in_highlighted = 1;
+				}
 			}
-		}
-		if (examples_clicked < 3 && in_highlighted == 1) {
-			if ($("#tdchoice" + String(i) + '_' + String(j)).attr("class") == "withoutHover objTable highlighted") {
-				if (isShape[shape_of_focus][i] == 0) {
-					$("#tdchoice" + String(i) + '_' + String(j)).removeClass('highlighted').addClass('chosen');
-					examples_clicked = examples_clicked + 1;
-					guessed_shapes.push([i, j]);
-				} else {
-					$("#tdchoice" + String(i) + '_' + String(j)).removeClass('highlighted').addClass('chosenCorrect');
-					examples_clicked = examples_clicked + 1;
-					guessed_shapes.push([i, j]);
-				};
-			};
+
+		} else {
+
+			for (ii = 0; ii < highlighted_boxes_block2.length; ii++) {
+				if (highlighted_boxes_block2[ii][0] == i && highlighted_boxes_block2[ii][1] == j) {
+					in_highlighted = 1;
+				}
+			}
+
 		};
+
+		if (examples_clicked < 3 && in_highlighted == 1) {
+				if ($("#tdchoice" + String(i) + '_' + String(j)).attr("class") == "withoutHover objTable highlighted") {
+					if (isShape[shape_of_focus][i] == 0) {
+						$("#tdchoice" + String(i) + '_' + String(j)).removeClass('highlighted').addClass('chosen');
+						examples_clicked = examples_clicked + 1;
+						guessed_shapes.push([i, j]);
+					} else {
+						$("#tdchoice" + String(i) + '_' + String(j)).removeClass('highlighted').addClass('chosenCorrect');
+						examples_clicked = examples_clicked + 1;
+						guessed_shapes.push([i, j]);
+					};
+				};
+		};
+
 	},
 
 
@@ -371,7 +478,7 @@ exp = {
 		var one_missing = 0;
 		for (var i = 0; i < questions.length; i++) {
 			answer_to_i = exp.r_pretest_answers[i];
-	    	if (answer_to_i == -1) {
+	    	if (answer_to_i == null) {
 	    		one_missing = 1;
 	    	}
 		};
@@ -385,13 +492,14 @@ exp = {
 
 	// check if participant actually completed the training 
 	training_test_check: function() {
-		if (((training_regime == 3 || training_regime == 4)  && examples_clicked < examples_to_show) && skip_check == 0) {
+		if ((examples_clicked < examples_to_show) && skip_check == 0) {
 			var click_on_three = '<font color="red">Please click on three shapes.</font>';
 			$("#training_check").html(click_on_three)
 		} else {
 			if (block == 1) {
-				block++
-				exp.relational_slide("pretest"); // if in first block, then you go to pretest ("test 1")
+				examples_clicked = 0				// reset examples clicked counter so interaction functionality will work in second block
+				$("#training_check").hide();		// remove any error messages shown to the user
+				exp.between_training_slide(block)	// go to the between training block slide
 			} else {
 				// get end of training time
 				endTime = new Date();
@@ -411,7 +519,7 @@ exp = {
 		var one_missing = 0;
 		for (var i = 0; i < questions.length; i++) {
 			answer_to_i = exp.r_posttest_answers[i];
-	    	if (answer_to_i == -1) {
+	    	if (answer_to_i == null) {
 	    		one_missing = 1;
 	    	}
 		};
@@ -450,6 +558,19 @@ exp = {
 
     // END FUNCTION
     end: function () {
+    	
+    	// decrement maker-getter if this is a turker 
+	    if (turk.workerId.length > 0) {
+	        var xmlHttp = null;
+	        xmlHttp = new XMLHttpRequest()
+	        xmlHttp.open("GET", "https://langcog.stanford.edu/cgi-bin/KM/subject_equalizer_km/decrementer.php?filename=" + filename + "&to_decrement=" + cond, false);
+	        xmlHttp.send(null)
+	    }
+    	
+    	// compute experiment time
+    	exp_times.push(new Date());
+    	exp.exp_time = exp_times[1] - exp_times[0];
+
     	showSlide("finished");
     	setTimeout(function () {
 		turk.submit(exp);

@@ -12,6 +12,67 @@ function random(a,b) {
     }
 }
 
+// a hacky/complicated function to check that quadmods examples are unique
+// loop over array of examples, skipping the first example
+// at the second example, check if this example equals the first. 
+// if it does, then randomly generate a new example until they do not match
+// do the same for the third example, but check it against both the first and the second examples
+
+function checkExamples(array) {
+
+    var cleanArray = array;
+    var new_example = [];
+
+    for (var i = 0; i < cleanArray.length; i++) {
+        if (i == 1) {
+
+            do {
+                new_example = [random(0,3), random(0,2)];
+                cleanArray[i] = new_example;
+            } 
+            while (arraysEqual(cleanArray[i], cleanArray[i-1]))
+
+        } else if (i == 2) {
+            // check if the third example is the same as the second example
+            if (arraysEqual(cleanArray[i], cleanArray[i-1])) {
+
+                do {
+                new_example = [random(0,3), random(0,2)];
+                cleanArray[i] = new_example;
+                } 
+                while (arraysEqual(cleanArray[i], cleanArray[i-1]))
+
+            } else if (arraysEqual(cleanArray[i], cleanArray[i-2])) {
+
+                do {
+                new_example = [random(0,3), random(0,2)];
+                cleanArray[i] = new_example;
+                } 
+                while (arraysEqual(cleanArray[i], cleanArray[i-2]))
+
+            }
+        };
+    };
+
+    return cleanArray;
+
+}
+
+// function to only keep unique values in array while preserving order
+
+getUnique = function(array){
+   var u = {}, a = [];
+   for(var i = 0, l = array.length; i < l; ++i){
+      if(u.hasOwnProperty(array[i])) {
+         continue;
+      }
+      a.push(array[i]);
+      u[array[i]] = 1;
+   }
+   return a;
+}
+
+
 
 function choose_from(arrayName) {
     var randomIndex = Math.floor(Math.random() * arrayName.length);
@@ -164,8 +225,6 @@ function getNameRadioValue(idNameList) {
 
 
 
-
-
 if (!('bind' in Function.prototype)) {
     Function.prototype.bind= function(owner) {
         var that= this;
@@ -188,6 +247,21 @@ if (!('trim' in String.prototype)) {
     String.prototype.trim= function() {
         return this.replace(/^\s+/, '').replace(/\s+$/, '');
     };
+}
+
+// Check if two arrays are equal
+function arraysEqual(a, b) {
+  if (a === b) return true;
+  if (a == null || b == null) return false;
+  if (a.length != b.length) return false;
+
+  // If you don't care about the order of the elements inside
+  // the array, you should sort both arrays here.
+
+  for (var i = 0; i < a.length; ++i) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
 }
 
 // Add ECMA262-5 Array methods if not supported natively
