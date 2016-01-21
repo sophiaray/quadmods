@@ -29,8 +29,8 @@ var training_conditions = ["active_passive", "passive_active", "active_active", 
 var numConditions = 4;
 
 try { 
-    var filename = "KM_quadmods_pilotA";
-    var condCounts = "3,3;4,3";
+    var filename = "KM_quadmods_pilotB";
+    var condCounts = "2,3;3,3";
     var xmlHttp = null;
     xmlHttp = new XMLHttpRequest();
     xmlHttp.open( "GET", "https://langcog.stanford.edu/cgi-bin/KM/subject_equalizer_km/maker_getter.php?conds=" + condCounts + "&filename=" + filename, false );
@@ -39,7 +39,6 @@ try {
 } catch (e) {
     var cond = random(2,numConditions-1); // if maker-getter fails, generate condition number randomly
 }
-
 
 var training_condition = training_conditions[cond];
 

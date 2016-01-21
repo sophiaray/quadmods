@@ -38,8 +38,8 @@
       <p class="block-text">In this game, we're interested in your judgments about different kinds of shapes. First you will answer some questions, then you will be shown a series of examples to help you learn about the shapes, and then you will be asked to answer some more questions. The task should take about 5 minutes or less. </p>
 
       <!-- If there is a familiarization stage then the next line should be active, otherwise the one after that should be active-->
-      <!-- <button type="button" onClick="this.blur(); exp.relational_slide('pretest')">Start</button>-->
-       <button type="button" onClick="this.blur(); exp.relational_slide('pretest')">Start</button>
+      
+       <button type="button" id="start_button" onClick="this.blur(); exp.relational_slide('pretest')">Start</button>
 
 
       <p class="block-text"> <b> (Note: you won't be able to preview this HIT before accepting it because it's so short.)
@@ -58,7 +58,7 @@
     <div class = "slide" id = "relational_pretest">
       <table align="center"><tr><td align="center">
       <div id ="relational_pretest_questions"> </div> <!-- questions dynamically built in javascript-->
-      <button type="button" id="pretest_to_pretest2" onClick="exp.first_test_check()">Next</button>
+      <button type="button" id="pretest_to_pretest2" onClick="exp.first_test_check('pretest')">Next</button>
       <div id="pre_test_check"> </div>
       </td></tr>
       </table>
@@ -96,7 +96,7 @@
     <div class = "slide" id = "post_test">
       <table align="center"><tr><td align="center">
       <div id ="post_test_questions"> </div> <!-- questions dynamically built in javascript-->
-      <button type="button" id="posttest_to_posttest2" onClick="exp.second_test_check()">Next</button>
+      <button type="button" id="posttest_to_posttest2" onClick="exp.second_test_check('posttest')">Next</button>
       <div id="post_test_check"> </div>
       </td></tr>
       </table>

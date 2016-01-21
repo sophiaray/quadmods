@@ -1,0 +1,337 @@
+"subids","age","gender","comments","exp_about","approval_time","exp_time","training_condition","shape_learned","training_time","trial_type","question","response","shape","trial_num_within_block","block","question_and_shape","correct"
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"relational","parallelogram","no","rectangle",1,"pretest","parallelogram_rectangle",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"relational","rectangle","no","rhombus",2,"pretest","rectangle_rhombus",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"relational","rhombus","no","rectangle",3,"pretest","rhombus_rectangle",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"relational","rhombus","no","square",4,"pretest","rhombus_square",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"relational","square","no","rhombus",5,"pretest","square_rhombus",FALSE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"relational","square","no","parallelogram",6,"pretest","square_parallelogram",FALSE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"relational","rectangle","no","square",7,"pretest","rectangle_square",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"relational","parallelogram","no","rhombus",8,"pretest","parallelogram_rhombus",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"relational","parallelogram","no","square",9,"pretest","parallelogram_square",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"relational","square","no","rectangle",10,"pretest","square_rectangle",FALSE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"relational","rhombus","no","parallelogram",11,"pretest","rhombus_parallelogram",FALSE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"relational","rectangle","no","parallelogram",12,"pretest","rectangle_parallelogram",FALSE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","parallelogram","no","rhombus",1,"pretest","parallelogram_rhombus",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","parallelogram","no","rectangle",2,"pretest","parallelogram_rectangle",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","parallelogram","yes","parallelogram",3,"pretest","parallelogram_parallelogram",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","parallelogram","no","square",4,"pretest","parallelogram_square",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","rhombus","no","square",5,"pretest","rhombus_square",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","rhombus","no","parallelogram",6,"pretest","rhombus_parallelogram",FALSE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","rhombus","yes","rhombus",7,"pretest","rhombus_rhombus",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","rhombus","no","rectangle",8,"pretest","rhombus_rectangle",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","square","yes","square",9,"pretest","square_square",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","square","no","parallelogram",10,"pretest","square_parallelogram",FALSE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","square","no","rhombus",11,"pretest","square_rhombus",FALSE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","square","no","rectangle",12,"pretest","square_rectangle",FALSE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","rectangle","no","square",13,"pretest","rectangle_square",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","rectangle","no","parallelogram",14,"pretest","rectangle_parallelogram",FALSE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","rectangle","yes","rectangle",15,"pretest","rectangle_rectangle",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","rectangle","no","rhombus",16,"pretest","rectangle_rhombus",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"relational","square","yes","rhombus",1,"posttest","square_rhombus",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"relational","rectangle","no","square",2,"posttest","rectangle_square",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"relational","parallelogram","no","square",3,"posttest","parallelogram_square",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"relational","parallelogram","no","rhombus",4,"posttest","parallelogram_rhombus",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"relational","parallelogram","yes","rectangle",5,"posttest","parallelogram_rectangle",FALSE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"relational","square","no","rectangle",6,"posttest","square_rectangle",FALSE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"relational","rhombus","no","rectangle",7,"posttest","rhombus_rectangle",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"relational","rectangle","no","rhombus",8,"posttest","rectangle_rhombus",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"relational","rhombus","no","square",9,"posttest","rhombus_square",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"relational","rectangle","no","parallelogram",10,"posttest","rectangle_parallelogram",FALSE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"relational","square","no","parallelogram",11,"posttest","square_parallelogram",FALSE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"relational","rhombus","no","parallelogram",12,"posttest","rhombus_parallelogram",FALSE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","rectangle","no","rhombus",1,"posttest","rectangle_rhombus",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","rectangle","no","parallelogram",2,"posttest","rectangle_parallelogram",FALSE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","rectangle","no","rectangle",3,"posttest","rectangle_rectangle",FALSE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","rectangle","no","square",4,"posttest","rectangle_square",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","rhombus","no","parallelogram",5,"posttest","rhombus_parallelogram",FALSE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","rhombus","no","square",6,"posttest","rhombus_square",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","rhombus","no","rectangle",7,"posttest","rhombus_rectangle",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","rhombus","no","rhombus",8,"posttest","rhombus_rhombus",FALSE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","square","no","square",9,"posttest","square_square",FALSE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","square","no","rhombus",10,"posttest","square_rhombus",FALSE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","square","no","rectangle",11,"posttest","square_rectangle",FALSE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","square","no","parallelogram",12,"posttest","square_parallelogram",FALSE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","parallelogram","no","square",13,"posttest","parallelogram_square",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","parallelogram","no","rectangle",14,"posttest","parallelogram_rectangle",TRUE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","parallelogram","no","parallelogram",15,"posttest","parallelogram_parallelogram",FALSE
+1,"22","f","thanks so much!","how people perceive shapes.",2016-01-21 19:03:11,520799,"passive_passive","rhombus",447046,"entity","parallelogram","no","rhombus",16,"posttest","parallelogram_rhombus",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"relational","square","no","rectangle",1,"pretest","square_rectangle",FALSE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"relational","square","no","rhombus",2,"pretest","square_rhombus",FALSE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"relational","parallelogram","yes","rhombus",3,"pretest","parallelogram_rhombus",FALSE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"relational","rhombus","no","rectangle",4,"pretest","rhombus_rectangle",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"relational","rhombus","yes","parallelogram",5,"pretest","rhombus_parallelogram",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"relational","rectangle","yes","rhombus",6,"pretest","rectangle_rhombus",FALSE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"relational","parallelogram","yes","square",7,"pretest","parallelogram_square",FALSE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"relational","rectangle","no","parallelogram",8,"pretest","rectangle_parallelogram",FALSE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"relational","rhombus","yes","square",9,"pretest","rhombus_square",FALSE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"relational","parallelogram","yes","rectangle",10,"pretest","parallelogram_rectangle",FALSE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"relational","rectangle","no","square",11,"pretest","rectangle_square",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"relational","square","yes","parallelogram",12,"pretest","square_parallelogram",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","parallelogram","yes","rectangle",1,"pretest","parallelogram_rectangle",FALSE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","parallelogram","no","rhombus",2,"pretest","parallelogram_rhombus",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","parallelogram","yes","square",3,"pretest","parallelogram_square",FALSE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","parallelogram","yes","parallelogram",4,"pretest","parallelogram_parallelogram",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","rhombus","no","square",5,"pretest","rhombus_square",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","rhombus","no","rectangle",6,"pretest","rhombus_rectangle",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","rhombus","yes","parallelogram",7,"pretest","rhombus_parallelogram",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","rhombus","no","rhombus",8,"pretest","rhombus_rhombus",FALSE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","square","no","rectangle",9,"pretest","square_rectangle",FALSE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","square","yes","rhombus",10,"pretest","square_rhombus",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","square","no","parallelogram",11,"pretest","square_parallelogram",FALSE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","square","yes","square",12,"pretest","square_square",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","rectangle","yes","rectangle",13,"pretest","rectangle_rectangle",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","rectangle","yes","parallelogram",14,"pretest","rectangle_parallelogram",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","rectangle","no","rhombus",15,"pretest","rectangle_rhombus",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","rectangle","no","square",16,"pretest","rectangle_square",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"relational","parallelogram","yes","rectangle",1,"posttest","parallelogram_rectangle",FALSE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"relational","square","yes","parallelogram",2,"posttest","square_parallelogram",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"relational","rhombus","yes","parallelogram",3,"posttest","rhombus_parallelogram",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"relational","rectangle","yes","parallelogram",4,"posttest","rectangle_parallelogram",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"relational","rhombus","no","rectangle",5,"posttest","rhombus_rectangle",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"relational","rhombus","yes","square",6,"posttest","rhombus_square",FALSE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"relational","square","no","rectangle",7,"posttest","square_rectangle",FALSE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"relational","rectangle","no","rhombus",8,"posttest","rectangle_rhombus",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"relational","square","yes","rhombus",9,"posttest","square_rhombus",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"relational","parallelogram","yes","rhombus",10,"posttest","parallelogram_rhombus",FALSE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"relational","rectangle","no","square",11,"posttest","rectangle_square",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"relational","parallelogram","yes","square",12,"posttest","parallelogram_square",FALSE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","rectangle","yes","parallelogram",1,"posttest","rectangle_parallelogram",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","rectangle","yes","rhombus",2,"posttest","rectangle_rhombus",FALSE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","rectangle","yes","rectangle",3,"posttest","rectangle_rectangle",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","rectangle","yes","square",4,"posttest","rectangle_square",FALSE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","parallelogram","yes","parallelogram",5,"posttest","parallelogram_parallelogram",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","parallelogram","yes","rectangle",6,"posttest","parallelogram_rectangle",FALSE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","parallelogram","yes","rhombus",7,"posttest","parallelogram_rhombus",FALSE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","parallelogram","yes","square",8,"posttest","parallelogram_square",FALSE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","square","yes","square",9,"posttest","square_square",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","square","yes","rhombus",10,"posttest","square_rhombus",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","square","yes","rectangle",11,"posttest","square_rectangle",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","square","yes","parallelogram",12,"posttest","square_parallelogram",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","rhombus","yes","rhombus",13,"posttest","rhombus_rhombus",TRUE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","rhombus","yes","square",14,"posttest","rhombus_square",FALSE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","rhombus","yes","rectangle",15,"posttest","rhombus_rectangle",FALSE
+2,"27","Male","","Learning to determine rhombuses.",2016-01-21 18:54:15,207463,"passive_passive","rhombus",24419,"entity","rhombus","yes","parallelogram",16,"posttest","rhombus_parallelogram",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"relational","square","yes","parallelogram",1,"pretest","square_parallelogram",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"relational","parallelogram","no","rectangle",2,"pretest","parallelogram_rectangle",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"relational","rectangle","no","square",3,"pretest","rectangle_square",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"relational","parallelogram","no","square",4,"pretest","parallelogram_square",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"relational","rhombus","no","square",5,"pretest","rhombus_square",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"relational","square","no","rectangle",6,"pretest","square_rectangle",FALSE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"relational","rhombus","no","rectangle",7,"pretest","rhombus_rectangle",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"relational","parallelogram","no","rhombus",8,"pretest","parallelogram_rhombus",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"relational","rectangle","no","parallelogram",9,"pretest","rectangle_parallelogram",FALSE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"relational","rectangle","no","rhombus",10,"pretest","rectangle_rhombus",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"relational","square","no","rhombus",11,"pretest","square_rhombus",FALSE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"relational","rhombus","no","parallelogram",12,"pretest","rhombus_parallelogram",FALSE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","rectangle","no","rhombus",1,"pretest","rectangle_rhombus",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","rectangle","no","square",2,"pretest","rectangle_square",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","rectangle","yes","rectangle",3,"pretest","rectangle_rectangle",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","rectangle","no","parallelogram",4,"pretest","rectangle_parallelogram",FALSE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","rhombus","yes","parallelogram",5,"pretest","rhombus_parallelogram",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","rhombus","no","rectangle",6,"pretest","rhombus_rectangle",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","rhombus","no","square",7,"pretest","rhombus_square",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","rhombus","no","rhombus",8,"pretest","rhombus_rhombus",FALSE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","square","no","rhombus",9,"pretest","square_rhombus",FALSE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","square","no","rectangle",10,"pretest","square_rectangle",FALSE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","square","yes","square",11,"pretest","square_square",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","square","no","parallelogram",12,"pretest","square_parallelogram",FALSE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","parallelogram","yes","square",13,"pretest","parallelogram_square",FALSE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","parallelogram","yes","rectangle",14,"pretest","parallelogram_rectangle",FALSE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","parallelogram","no","parallelogram",15,"pretest","parallelogram_parallelogram",FALSE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","parallelogram","no","rhombus",16,"pretest","parallelogram_rhombus",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"relational","rectangle","no","parallelogram",1,"posttest","rectangle_parallelogram",FALSE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"relational","square","no","rectangle",2,"posttest","square_rectangle",FALSE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"relational","parallelogram","no","square",3,"posttest","parallelogram_square",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"relational","parallelogram","no","rectangle",4,"posttest","parallelogram_rectangle",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"relational","rhombus","yes","parallelogram",5,"posttest","rhombus_parallelogram",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"relational","rhombus","yes","square",6,"posttest","rhombus_square",FALSE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"relational","square","no","parallelogram",7,"posttest","square_parallelogram",FALSE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"relational","rhombus","yes","rectangle",8,"posttest","rhombus_rectangle",FALSE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"relational","parallelogram","no","rhombus",9,"posttest","parallelogram_rhombus",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"relational","square","no","rhombus",10,"posttest","square_rhombus",FALSE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"relational","rectangle","no","rhombus",11,"posttest","rectangle_rhombus",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"relational","rectangle","no","square",12,"posttest","rectangle_square",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","parallelogram","no","square",1,"posttest","parallelogram_square",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","parallelogram","no","rhombus",2,"posttest","parallelogram_rhombus",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","parallelogram","no","parallelogram",3,"posttest","parallelogram_parallelogram",FALSE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","parallelogram","no","rectangle",4,"posttest","parallelogram_rectangle",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","rectangle","no","rectangle",5,"posttest","rectangle_rectangle",FALSE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","rectangle","no","rhombus",6,"posttest","rectangle_rhombus",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","rectangle","no","square",7,"posttest","rectangle_square",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","rectangle","no","parallelogram",8,"posttest","rectangle_parallelogram",FALSE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","square","no","parallelogram",9,"posttest","square_parallelogram",FALSE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","square","no","rhombus",10,"posttest","square_rhombus",FALSE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","square","no","square",11,"posttest","square_square",FALSE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","square","no","rectangle",12,"posttest","square_rectangle",FALSE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","rhombus","no","parallelogram",13,"posttest","rhombus_parallelogram",FALSE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","rhombus","no","rectangle",14,"posttest","rhombus_rectangle",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","rhombus","no","square",15,"posttest","rhombus_square",TRUE
+3,"31","m","None at this time","How people learn about shapes",2016-01-21 18:37:26,179759,"active_active","rhombus",18552,"entity","rhombus","no","rhombus",16,"posttest","rhombus_rhombus",FALSE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"relational","parallelogram","yes","rectangle",1,"pretest","parallelogram_rectangle",FALSE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"relational","rhombus","no","rectangle",2,"pretest","rhombus_rectangle",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"relational","parallelogram","yes","rhombus",3,"pretest","parallelogram_rhombus",FALSE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"relational","rectangle","yes","parallelogram",4,"pretest","rectangle_parallelogram",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"relational","square","yes","rectangle",5,"pretest","square_rectangle",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"relational","rhombus","no","square",6,"pretest","rhombus_square",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"relational","parallelogram","no","square",7,"pretest","parallelogram_square",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"relational","rhombus","yes","parallelogram",8,"pretest","rhombus_parallelogram",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"relational","rectangle","yes","square",9,"pretest","rectangle_square",FALSE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"relational","rectangle","yes","rhombus",10,"pretest","rectangle_rhombus",FALSE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"relational","square","yes","parallelogram",11,"pretest","square_parallelogram",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"relational","square","no","rhombus",12,"pretest","square_rhombus",FALSE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","square","yes","square",1,"pretest","square_square",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","square","no","rectangle",2,"pretest","square_rectangle",FALSE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","square","no","rhombus",3,"pretest","square_rhombus",FALSE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","square","no","parallelogram",4,"pretest","square_parallelogram",FALSE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","parallelogram","no","square",5,"pretest","parallelogram_square",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","parallelogram","yes","parallelogram",6,"pretest","parallelogram_parallelogram",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","parallelogram","no","rhombus",7,"pretest","parallelogram_rhombus",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","parallelogram","no","rectangle",8,"pretest","parallelogram_rectangle",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","rhombus","no","square",9,"pretest","rhombus_square",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","rhombus","no","rectangle",10,"pretest","rhombus_rectangle",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","rhombus","no","parallelogram",11,"pretest","rhombus_parallelogram",FALSE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","rhombus","yes","rhombus",12,"pretest","rhombus_rhombus",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","rectangle","yes","rectangle",13,"pretest","rectangle_rectangle",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","rectangle","no","parallelogram",14,"pretest","rectangle_parallelogram",FALSE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","rectangle","no","square",15,"pretest","rectangle_square",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","rectangle","no","rhombus",16,"pretest","rectangle_rhombus",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"relational","square","yes","parallelogram",1,"posttest","square_parallelogram",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"relational","rhombus","no","square",2,"posttest","rhombus_square",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"relational","square","yes","rectangle",3,"posttest","square_rectangle",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"relational","rhombus","no","parallelogram",4,"posttest","rhombus_parallelogram",FALSE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"relational","parallelogram","yes","rhombus",5,"posttest","parallelogram_rhombus",FALSE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"relational","rectangle","yes","parallelogram",6,"posttest","rectangle_parallelogram",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"relational","parallelogram","yes","square",7,"posttest","parallelogram_square",FALSE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"relational","rectangle","yes","rhombus",8,"posttest","rectangle_rhombus",FALSE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"relational","square","no","rhombus",9,"posttest","square_rhombus",FALSE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"relational","parallelogram","yes","rectangle",10,"posttest","parallelogram_rectangle",FALSE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"relational","rectangle","no","square",11,"posttest","rectangle_square",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"relational","rhombus","no","rectangle",12,"posttest","rhombus_rectangle",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","parallelogram","no","square",1,"posttest","parallelogram_square",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","parallelogram","no","rectangle",2,"posttest","parallelogram_rectangle",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","parallelogram","no","parallelogram",3,"posttest","parallelogram_parallelogram",FALSE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","parallelogram","no","rhombus",4,"posttest","parallelogram_rhombus",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","rectangle","no","rectangle",5,"posttest","rectangle_rectangle",FALSE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","rectangle","no","parallelogram",6,"posttest","rectangle_parallelogram",FALSE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","rectangle","no","square",7,"posttest","rectangle_square",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","rectangle","no","rhombus",8,"posttest","rectangle_rhombus",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","rhombus","no","parallelogram",9,"posttest","rhombus_parallelogram",FALSE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","rhombus","no","rectangle",10,"posttest","rhombus_rectangle",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","rhombus","no","square",11,"posttest","rhombus_square",TRUE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","rhombus","no","rhombus",12,"posttest","rhombus_rhombus",FALSE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","square","no","parallelogram",13,"posttest","square_parallelogram",FALSE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","square","no","rhombus",14,"posttest","square_rhombus",FALSE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","square","no","square",15,"posttest","square_square",FALSE
+4,"22","m","no","Quadrilaterals",2016-01-21 18:54:15,255908,"passive_passive","rhombus",12822,"entity","square","no","rectangle",16,"posttest","square_rectangle",FALSE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"relational","rectangle","no","rhombus",1,"pretest","rectangle_rhombus",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"relational","rhombus","yes","square",2,"pretest","rhombus_square",FALSE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"relational","square","no","rectangle",3,"pretest","square_rectangle",FALSE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"relational","square","yes","parallelogram",4,"pretest","square_parallelogram",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"relational","rhombus","no","rectangle",5,"pretest","rhombus_rectangle",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"relational","rhombus","yes","parallelogram",6,"pretest","rhombus_parallelogram",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"relational","parallelogram","yes","rhombus",7,"pretest","parallelogram_rhombus",FALSE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"relational","parallelogram","yes","square",8,"pretest","parallelogram_square",FALSE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"relational","rectangle","no","square",9,"pretest","rectangle_square",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"relational","square","yes","rhombus",10,"pretest","square_rhombus",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"relational","rectangle","yes","parallelogram",11,"pretest","rectangle_parallelogram",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"relational","parallelogram","yes","rectangle",12,"pretest","parallelogram_rectangle",FALSE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","square","yes","square",1,"pretest","square_square",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","square","no","parallelogram",2,"pretest","square_parallelogram",FALSE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","square","no","rhombus",3,"pretest","square_rhombus",FALSE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","square","no","rectangle",4,"pretest","square_rectangle",FALSE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","parallelogram","yes","rectangle",5,"pretest","parallelogram_rectangle",FALSE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","parallelogram","no","rhombus",6,"pretest","parallelogram_rhombus",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","parallelogram","no","square",7,"pretest","parallelogram_square",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","parallelogram","no","parallelogram",8,"pretest","parallelogram_parallelogram",FALSE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","rhombus","yes","square",9,"pretest","rhombus_square",FALSE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","rhombus","no","rhombus",10,"pretest","rhombus_rhombus",FALSE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","rhombus","no","parallelogram",11,"pretest","rhombus_parallelogram",FALSE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","rhombus","no","rectangle",12,"pretest","rhombus_rectangle",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","rectangle","no","parallelogram",13,"pretest","rectangle_parallelogram",FALSE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","rectangle","yes","rectangle",14,"pretest","rectangle_rectangle",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","rectangle","no","rhombus",15,"pretest","rectangle_rhombus",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","rectangle","no","square",16,"pretest","rectangle_square",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"relational","parallelogram","yes","rhombus",1,"posttest","parallelogram_rhombus",FALSE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"relational","parallelogram","yes","rectangle",2,"posttest","parallelogram_rectangle",FALSE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"relational","square","no","rectangle",3,"posttest","square_rectangle",FALSE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"relational","rectangle","yes","parallelogram",4,"posttest","rectangle_parallelogram",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"relational","rhombus","yes","parallelogram",5,"posttest","rhombus_parallelogram",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"relational","parallelogram","yes","square",6,"posttest","parallelogram_square",FALSE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"relational","rectangle","no","rhombus",7,"posttest","rectangle_rhombus",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"relational","rectangle","no","square",8,"posttest","rectangle_square",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"relational","rhombus","no","rectangle",9,"posttest","rhombus_rectangle",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"relational","square","yes","parallelogram",10,"posttest","square_parallelogram",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"relational","rhombus","yes","square",11,"posttest","rhombus_square",FALSE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"relational","square","yes","rhombus",12,"posttest","square_rhombus",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","parallelogram","yes","square",1,"posttest","parallelogram_square",FALSE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","parallelogram","yes","rectangle",2,"posttest","parallelogram_rectangle",FALSE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","parallelogram","yes","parallelogram",3,"posttest","parallelogram_parallelogram",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","parallelogram","yes","rhombus",4,"posttest","parallelogram_rhombus",FALSE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","rectangle","yes","rectangle",5,"posttest","rectangle_rectangle",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","rectangle","yes","square",6,"posttest","rectangle_square",FALSE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","rectangle","yes","rhombus",7,"posttest","rectangle_rhombus",FALSE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","rectangle","yes","parallelogram",8,"posttest","rectangle_parallelogram",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","square","yes","rectangle",9,"posttest","square_rectangle",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","square","yes","parallelogram",10,"posttest","square_parallelogram",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","square","yes","rhombus",11,"posttest","square_rhombus",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","square","yes","square",12,"posttest","square_square",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","rhombus","yes","rhombus",13,"posttest","rhombus_rhombus",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","rhombus","yes","parallelogram",14,"posttest","rhombus_parallelogram",TRUE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","rhombus","yes","rectangle",15,"posttest","rhombus_rectangle",FALSE
+5,"21","f","No","Shapes",2016-01-21 18:36:11,145600,"active_active","rhombus",29030,"entity","rhombus","yes","square",16,"posttest","rhombus_square",FALSE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"relational","parallelogram","no","rectangle",1,"pretest","parallelogram_rectangle",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"relational","rectangle","no","rhombus",2,"pretest","rectangle_rhombus",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"relational","parallelogram","no","square",3,"pretest","parallelogram_square",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"relational","square","no","parallelogram",4,"pretest","square_parallelogram",FALSE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"relational","square","no","rhombus",5,"pretest","square_rhombus",FALSE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"relational","parallelogram","no","rhombus",6,"pretest","parallelogram_rhombus",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"relational","rhombus","no","parallelogram",7,"pretest","rhombus_parallelogram",FALSE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"relational","rhombus","no","square",8,"pretest","rhombus_square",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"relational","rectangle","no","parallelogram",9,"pretest","rectangle_parallelogram",FALSE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"relational","rhombus","no","rectangle",10,"pretest","rhombus_rectangle",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"relational","rectangle","yes","square",11,"pretest","rectangle_square",FALSE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"relational","square","no","rectangle",12,"pretest","square_rectangle",FALSE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","parallelogram","no","rectangle",1,"pretest","parallelogram_rectangle",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","parallelogram","no","square",2,"pretest","parallelogram_square",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","parallelogram","yes","parallelogram",3,"pretest","parallelogram_parallelogram",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","parallelogram","no","rhombus",4,"pretest","parallelogram_rhombus",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","rhombus","yes","rhombus",5,"pretest","rhombus_rhombus",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","rhombus","no","rectangle",6,"pretest","rhombus_rectangle",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","rhombus","no","parallelogram",7,"pretest","rhombus_parallelogram",FALSE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","rhombus","no","square",8,"pretest","rhombus_square",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","rectangle","yes","rectangle",9,"pretest","rectangle_rectangle",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","rectangle","no","rhombus",10,"pretest","rectangle_rhombus",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","rectangle","no","parallelogram",11,"pretest","rectangle_parallelogram",FALSE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","rectangle","no","square",12,"pretest","rectangle_square",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","square","no","rhombus",13,"pretest","square_rhombus",FALSE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","square","no","rectangle",14,"pretest","square_rectangle",FALSE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","square","yes","square",15,"pretest","square_square",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","square","no","parallelogram",16,"pretest","square_parallelogram",FALSE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"relational","rhombus","yes","square",1,"posttest","rhombus_square",FALSE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"relational","rectangle","no","parallelogram",2,"posttest","rectangle_parallelogram",FALSE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"relational","rhombus","no","rectangle",3,"posttest","rhombus_rectangle",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"relational","parallelogram","no","rhombus",4,"posttest","parallelogram_rhombus",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"relational","square","no","rectangle",5,"posttest","square_rectangle",FALSE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"relational","rectangle","yes","square",6,"posttest","rectangle_square",FALSE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"relational","square","no","parallelogram",7,"posttest","square_parallelogram",FALSE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"relational","parallelogram","no","square",8,"posttest","parallelogram_square",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"relational","rectangle","no","rhombus",9,"posttest","rectangle_rhombus",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"relational","rhombus","no","parallelogram",10,"posttest","rhombus_parallelogram",FALSE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"relational","parallelogram","no","rectangle",11,"posttest","parallelogram_rectangle",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"relational","square","no","rhombus",12,"posttest","square_rhombus",FALSE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","square","no","square",1,"posttest","square_square",FALSE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","square","no","rectangle",2,"posttest","square_rectangle",FALSE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","square","no","parallelogram",3,"posttest","square_parallelogram",FALSE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","square","no","rhombus",4,"posttest","square_rhombus",FALSE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","parallelogram","no","rhombus",5,"posttest","parallelogram_rhombus",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","parallelogram","no","parallelogram",6,"posttest","parallelogram_parallelogram",FALSE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","parallelogram","no","rectangle",7,"posttest","parallelogram_rectangle",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","parallelogram","no","square",8,"posttest","parallelogram_square",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","rhombus","no","rhombus",9,"posttest","rhombus_rhombus",FALSE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","rhombus","no","rectangle",10,"posttest","rhombus_rectangle",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","rhombus","no","parallelogram",11,"posttest","rhombus_parallelogram",FALSE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","rhombus","no","square",12,"posttest","rhombus_square",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","rectangle","no","rhombus",13,"posttest","rectangle_rhombus",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","rectangle","no","rectangle",14,"posttest","rectangle_rectangle",FALSE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","rectangle","no","square",15,"posttest","rectangle_square",TRUE
+6,"20","male","","shapes",2016-01-21 18:38:35,116230,"passive_passive","rhombus",13934,"entity","rectangle","no","parallelogram",16,"posttest","rectangle_parallelogram",FALSE

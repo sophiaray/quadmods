@@ -1,0 +1,194 @@
+---
+title: "quadmods_import"
+author: "Kyle MacDonald"
+date: "January 16, 2016"
+output: html_document
+---
+
+This script imports and formats data for active/passive learning experiment
+about quadrilaterals. 
+
+# Libraries
+
+```{r, message=FALSE}
+rm(list=ls())
+library(jsonlite)
+library(plyr)
+library(dplyr)
+library(lubridate)
+library(tidyr)
+```
+
+Set working directory to where you stored raw JSON files.
+
+```{r}
+setwd("../raw-data/pilot-a/production-results")
+```
+
+# Read in all the JSON strings
+
+```{r comment=NA}
+read.file <- function(filename) {
+  con <- file(filename, "r", blocking = TRUE)
+  lines <- paste(readLines(con, warn = FALSE), collapse = "\n")
+  close(con)
+  lines
+}
+
+json.filenames <- list.files()
+json.strings <- Map(read.file, json.filenames)
+```
+
+# Convert JSON to a R data frame
+
+Merge all the json strings together, as if they are in a big array, and convert it to an R data frame:
+
+```{r comment=NA}
+json.superstring <- paste("[",paste(json.strings, collapse = ","),"]")
+assignments <- fromJSON( json.superstring )
+```
+
+Only keep unique worker IDs.
+
+```{r comment=NA}
+assignments <- distinct(assignments, WorkerId)
+```
+
+## Build experiment information data frame.
+
+```{r comment=NA}
+exp_df <- data.frame(
+    workerid = assignments$WorkerId, 
+    age = assignments$answers$age,
+    gender = assignments$answers$gender,
+    comments = assignments$answers$comment,
+    exp_about = assignments$answers$about,
+    approval_time = assignments$AutoApprovalTime,
+    exp_time = assignments$answers$exp_time,
+    training_condition = assignments$answers$training_condition,
+    shape_learned = assignments$answers$shape_of_focus,
+    training_time = assignments$answers$training_time,
+    stringsAsFactors = F
+)
+```
+
+## Build trial level data frame
+
+```{r}
+trial_data <- Map(function(id, subject.trial.data) 
+    { cbind(workerid = id, subject.trial.data) },
+                  assignments$WorkerId,
+                  assignments$answers$data)
+
+```
+
+```{r}
+strip.rownames <- function(x) {
+  rownames(x) <- NULL
+  x
+}
+
+trial_data <- strip.rownames(do.call(rbind, trial_data))
+```
+
+## Merge
+
+```{r}
+df_final <- left_join(exp_df, trial_data, by = "workerid")
+```
+
+## Fix timestamps
+
+```{r}
+# This drops the weirdo T and Z from the turk timestamps and then parses them into seconds time 0 (some UTC standard)
+df_final$approval_time <- parse_date_time(
+    gsub("[[:alpha:]]"," ", 
+         df_final$approval_time),
+    "Ymd hms"
+)
+```
+
+## Do some clean-up:
+
+- Make all shape and question strings singular
+- Make a variable that has both the question and the shape so we can easily see if the trial is correct
+
+```{r}
+df_final <- df_final %>% 
+    mutate(shape = ifelse(shape == "rectangles", "rectangle", 
+                          ifelse(shape == "rhombuses", "rhombus", 
+                                 ifelse(shape == "squares", "square",
+                                        ifelse(shape == "parallelograms", "parallelogram", shape)))),
+           question = ifelse(question == "rectangles", "rectangle", 
+                          ifelse(question == "rhombuses", "rhombus", 
+                                 ifelse(question == "squares", "square",
+                                        ifelse(question == "parallelograms", "parallelogram", question)))),
+           shape_learned = ifelse(shape_learned == 2, "rhombus", shape_learned),
+           question_and_shape = paste(question, shape, sep = '_')
+           )
+```
+
+Flag if a trial is correct
+
+```{r}
+# takes in a row of a data frame
+# and based on values in that row
+# returns if the trial was correct or incorrect
+
+flag_correct <- function (trial) {
+    trial_type <- as.character(trial[which(names(trial)=="trial_type")])
+    question_and_shape <- as.character(trial[which(names(trial)=="question_and_shape")])
+    response <- as.character(trial[which(names(trial)=="response")])
+    
+    switch(question_and_shape,
+           parallelogram_rectangle = {correct_answer <- "no"},
+           rectangle_rhombus = {correct_answer <- "no"},
+           rhombus_rectangle = {correct_answer <- "no"},
+           rhombus_square = {correct_answer <- "no"},
+           square_rhombus = {correct_answer <- "yes"},
+           square_parallelogram = {correct_answer <- "yes"},
+           rectangle_square = {correct_answer <- "no"},
+           parallelogram_rhombus = {correct_answer <- "no"},
+           parallelogram_square = {correct_answer <- "no"},
+           square_rectangle = {correct_answer <- "yes"},
+           rhombus_parallelogram = {correct_answer <- "yes"},
+           rectangle_parallelogram = {correct_answer <- "yes"},
+           parallelogram_parallelogram = {correct_answer <- "yes"},
+           rhombus_rhombus = {correct_answer <- "yes"},
+           square_square = {correct_answer <- "yes"},
+           rectangle_rectangle = {correct_answer <- "yes"}
+    )
+    
+    # retun T/F for each trial
+    correct <- response == correct_answer
+     return(correct)
+}
+
+# create a vector of correct/incorrect
+correct <- apply(df_final, 1, flag_correct)
+
+# merge correct info with main df
+df_final <- cbind(df_final, correct)
+
+```
+
+Anonymize
+
+```{r}
+anonymized_df <- df_final %>% 
+    select(workerid) %>% 
+    distinct() %>% 
+    mutate(subids = 1:nrow(.))
+
+df_final_clean <- left_join(df_final, anonymized_df, by = "workerid") %>% 
+    select(-workerid)
+
+# move subid to the first col
+df_final_clean <- select(df_final_clean, subids, everything())
+```
+
+## Save tidy data 
+
+```{r}
+write.csv(x = df_final_clean, file = "../../../data/quadmods-sequences-1.csv", row.names=F)
+```

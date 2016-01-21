@@ -13,7 +13,13 @@ To make the code more usable it will be necessary to
 */
 
 
+
 showSlide("instructions");
+
+// hide start button if we are in turk preview mode
+if (turk.previewMode) {
+	$('#start_button').hide()
+}
 
 // The main experiment:
 //		The variable/object 'experiment' has two distinct but interrelated components:
@@ -34,9 +40,11 @@ exp = {
   // The first batch, however, is set determined by the experiment conditions
   // and therefore should not be affected by the decisions made by the experimental subject.
 
-
 	// Order of questions
 	permutations_used: permutations,
+
+	// Store all data
+	data: [],
 
 	// Pre-test answers
 	r_pretest_answers,
@@ -114,22 +122,53 @@ exp = {
 
   relational_answers: function (test_id) {
   	// get participants answers in the order they gave them
-    answers = []
+    answers = [];
+    counter = 0;
     for (pair in shape_pairs) {
     	if (test_id == "pretest") {
     		current_pair = exp.r_pretest_order_as_presented[pair]; 
-    		answers.push($(`input:radio[name=${current_pair}]:checked`).val())
-    	} else {
+    		response = $(`input:radio[name=${current_pair}]:checked`).val();
+    		answers.push(response);
+
+    		// trial level data storage
+    		trial_data = {
+	    		trial_type: "relational",
+	    		block: test_id,
+	    		trial_num_within_block: counter + 1,
+	    		response: response,
+	    		shape: current_pair.slice(current_pair.lastIndexOf('_')+1),
+	    		question: current_pair.slice(current_pair.indexOf('_',3)+1,current_pair.indexOf('_',current_pair.indexOf('_',3)+1))
+	    	};
+	    	exp.data.push(trial_data);
+	    	counter++;
+    	} else if (test_id == "posttest") {
     		current_pair = exp.r_posttest_order_as_presented[pair]; 
-    		answers.push($(`input:radio[name=${current_pair}]:checked`).val())
+    		response = $(`input:radio[name=${current_pair}]:checked`).val();
+    		answers.push(response);
+
+    		response = $(`input:radio[name=${current_pair}]:checked`).val();
+    		trial_data = {
+	    		trial_type: "relational",
+	    		block: test_id,
+	    		trial_num_within_block: counter + 1,
+	    		response: response,
+	    		shape: current_pair.slice(current_pair.lastIndexOf('_')+1),
+	    		question: current_pair.slice(current_pair.indexOf('_',3)+1,current_pair.indexOf('_',current_pair.indexOf('_',3)+1))
+	    	};
+	    	exp.data.push(trial_data);
+	    	counter++;
     	}
     }
     return answers
   },
 
-  relational_close: function () {
-    exp.r_pretest_answers = exp.relational_answers("pretest")
-    exp.r_posttest_answers = exp.relational_answers("posttest")
+  relational_close: function (test_id) {
+  	if (test_id == "pretest") {
+  		exp.r_pretest_answers = exp.relational_answers(test_id)	
+  	} else {
+  		exp.r_posttest_answers = exp.relational_answers(test_id)
+  	}
+    
   },
 
   entity_questions_log: function (shape_name, test_id, q_shape_name) {
@@ -155,7 +194,7 @@ exp = {
         // log order of presentation of both question and shapes for each entity question
         exp.entity_questions_log(a_shape, test_id, q_shape); 
       }
-      question_html += `<br> Which is a ${q_shape}?" <br> <table align="center"> <tr> ${answer_html} </tr> </table>`
+      question_html += `<br> Which of these shapes is a ${q_shape}?" <br> <table align="center"> <tr> ${answer_html} </tr> </table>`
     }
     entity_html = `For the following questions please select <i>all</i> correct answers. <br> <b> Note: </b> You can select more than one shape for each question. <br> ${question_html} `
     $(`#entity_${test_id}_questions`).html(entity_html)
@@ -163,16 +202,45 @@ exp = {
   },
 
   entity_answers: function (test_id) {
-    answers = []
+    answers = [];
+    counter = 0;
 
 	// loop over the images in the entity table to see which ones are highlighted
     if (test_id == "pretest") {
     	$('#pretest_entity_table .entity_response img').each(function() {
 	    	answers.push($(this).hasClass("highlighted"));   
+	    	// store data at trial level
+	    	if ($(this).hasClass("highlighted")) {
+	    		response = "yes";
+	    	} else {
+	    		response = "no";
+	    	};
+
+	    	 trial_data = {
+	    		trial_type: "entity",
+	    		block: test_id,
+	    		trial_num_within_block: counter + 1,
+	    		response: response,
+	    		shape: exp.e_pretest_shape_order_as_presented[counter],
+	    		question: exp.e_pretest_q_order_as_presented[counter]
+	    	};
+	    	exp.data.push(trial_data);
+	    	counter++;
 	 	});
     } else {
     	$('#posttest_entity_table .entity_response img').each(function() {
-	    	answers.push($(this).hasClass("highlighted"));   
+	    	answers.push($(this).hasClass("highlighted"));  
+
+	    	trial_data = {
+	    		trial_type: "entity",
+	    		block: test_id,
+	    		trial_num_within_block: counter + 1,
+	    		response: response,
+	    		shape: exp.e_posttest_shape_order_as_presented[counter],
+	    		question: exp.e_posttest_q_order_as_presented[counter]
+	    	};
+	    	exp.data.push(trial_data);
+	    	counter++; 
 	 	});
     };
 
@@ -183,7 +251,7 @@ exp = {
   	if (test_id == "pretest") {
   		exp.e_pretest_responses = exp.entity_answers(test_id);
   	} else {
-  		exp.e_posttest_responses = exp.entity_answers();
+  		exp.e_posttest_responses = exp.entity_answers(test_id);
   	}
   },
 
@@ -472,12 +540,19 @@ exp = {
 
 	// Tests if the answers to the relational pretest were provided fully
 	first_test_check: function(test_id) {
-		// call function to get radio button values
-		exp.relational_close();
+		// get radio button values
+		check_answers = [];
+		for (pair in shape_pairs) {
+	    	if (test_id == "pretest") {
+	    		current_pair = exp.r_pretest_order_as_presented[pair]; 
+	    		response = $(`input:radio[name=${current_pair}]:checked`).val();
+	    		check_answers.push(response);
+			}
+		}
 		// check if any are missing
 		var one_missing = 0;
 		for (var i = 0; i < questions.length; i++) {
-			answer_to_i = exp.r_pretest_answers[i];
+			answer_to_i = check_answers[i];
 	    	if (answer_to_i == null) {
 	    		one_missing = 1;
 	    	}
@@ -486,6 +561,7 @@ exp = {
     		var answer_all_message = '<font color="red">Please answer all the questions.</font>';
     		$("#pre_test_check").html(answer_all_message);
     	} else {
+    		exp.relational_close(test_id);
     		exp.entity_slide('pretest') 
     	};
 	},
@@ -511,14 +587,21 @@ exp = {
 	},
 
 	// Tests if the answers to the relational posttest were provided fully. If yes, continue to entity posttest
-	second_test_check: function() {
-		// call function to get radio button values
-		exp.relational_close();
+	second_test_check: function(test_id) {
+		// get radio button values
+		check_answers = [];
+		for (pair in shape_pairs) {
+	    	if (test_id == "posttest") {
+	    		current_pair = exp.r_posttest_order_as_presented[pair]; 
+	    		response = $(`input:radio[name=${current_pair}]:checked`).val();
+	    		check_answers.push(response);
+			}
+		}
 
 		//check to see if any are missing
 		var one_missing = 0;
 		for (var i = 0; i < questions.length; i++) {
-			answer_to_i = exp.r_posttest_answers[i];
+			answer_to_i = check_answers[i];
 	    	if (answer_to_i == null) {
 	    		one_missing = 1;
 	    	}
@@ -527,6 +610,7 @@ exp = {
     		var answer_all_message = '<font color="red">Please answer all the questions.</font>';
     		$("#post_test_check").html(answer_all_message);
     	} else {
+    		exp.relational_close(test_id);
     		exp.entity_slide('posttest');
     	};
 	},
