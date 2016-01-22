@@ -29,8 +29,8 @@ var training_conditions = ["active_passive", "passive_active", "active_active", 
 var numConditions = 4;
 
 try { 
-    var filename = "KM_quadmods_pilotB";
-    var condCounts = "2,3;3,3";
+    var filename = "KM_quadmods_pilot_full";
+    var condCounts = "2,20;3,20";
     var xmlHttp = null;
     xmlHttp = new XMLHttpRequest();
     xmlHttp.open( "GET", "https://langcog.stanford.edu/cgi-bin/KM/subject_equalizer_km/maker_getter.php?conds=" + condCounts + "&filename=" + filename, false );

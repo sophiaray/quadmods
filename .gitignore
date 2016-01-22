@@ -1,2 +1,5 @@
 .RData
 raw-data/
+*cache/
+*_files/
+rsconnect/

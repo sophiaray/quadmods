@@ -24,7 +24,7 @@ if (turk.previewMode) {
 // The main experiment:
 //		The variable/object 'experiment' has two distinct but interrelated components:
 //		1) It collects the variables that will be delivered to Turk at the end of the experiment
-//		2) It hall all the functions that change the visual aspect of the experiment such as showing images, etc.
+//		2) It has all the functions that change the visual aspect of the experiment such as showing images, etc.
 
 shape_pairs = []
 for (shape1 of shapes) {
@@ -189,14 +189,22 @@ exp = {
       for (a_shape of _.shuffle(singular_shapes)) {
         a_id = `e_${test_id}_${q_shape}_${a_shape}`
         a_img_src = `shapes/${a_shape}_${_.random(1,3)}.png`
+
+        // make singular shape plural for html
+        if (q_shape == "rhombus") {
+        	q_id_html = q_shape.concat("es");
+        } else {
+        	q_id_html = q_shape.concat("s");
+        }
+
         answer_html += `<td class="entity_response"> <img id="${a_id}" class="withoutHover objTable" width="100px" height="100px" src="${a_img_src}" onclick="$('#${a_id}').toggleClass('highlighted')"> </td>`
         
         // log order of presentation of both question and shapes for each entity question
         exp.entity_questions_log(a_shape, test_id, q_shape); 
       }
-      question_html += `<br> Which of these shapes is a ${q_shape}?" <br> <table align="center"> <tr> ${answer_html} </tr> </table>`
+      question_html += `<br> Click on all of the ${q_id_html}: <br> <table align="center"> <tr> ${answer_html} </tr> </table>`
     }
-    entity_html = `For the following questions please select <i>all</i> correct answers. <br> <b> Note: </b> You can select more than one shape for each question. <br> ${question_html} `
+    entity_html = `For the following prompts, please select <i>all</i> of the correct answers. <br><br> <b> Note: You can select more than one shape for each question. </b> <br> ${question_html} `
     $(`#entity_${test_id}_questions`).html(entity_html)
     showSlide(`entity_${test_id}`)
   },
@@ -444,14 +452,39 @@ exp = {
 		$("#tdchoice" + String(i) + '_' + String(j)).removeClass('unchosen').addClass('chosen');
 	},
 
-	// For the case of active and passive teaching
+	// For the case of active learning
 	guess_this_shape: function(i, j) {
 		if (examples_clicked < examples_to_show) {
 			if ($("#tdchoice" + String(i) + '_' + String(j)).attr("class") == "unchosen objTable") {
 				if (isShape[shape_of_focus][i] == 0) {
 					$("#tdchoice" + String(i) + '_' + String(j)).removeClass('unchosen').addClass('chosen');
+
+					highlighted_shape_name = $("#tdchoice" + String(i) + '_' + String(j)).attr('src');
+						clean_name = highlighted_shape_name.slice(highlighted_shape_name.indexOf('/')+1, highlighted_shape_name.lastIndexOf('_'));
+							trial_data = {
+									trial_type: "training",
+						    		block: block,
+						    		trial_num_within_block: "NA",
+						    		response: "no",
+						    		shape: clean_name,
+						    		question: shape_of_focus
+						    	};
+						    exp.data.push(trial_data);
+
 				} else {
 					$("#tdchoice" + String(i) + '_' + String(j)).removeClass('unchosen').addClass('chosenCorrect');
+
+					highlighted_shape_name = $("#tdchoice" + String(i) + '_' + String(j)).attr('src');
+						clean_name = highlighted_shape_name.slice(highlighted_shape_name.indexOf('/')+1, highlighted_shape_name.lastIndexOf('_'));
+							trial_data = {
+									trial_type: "training",
+						    		block: block,
+						    		trial_num_within_block: "NA",
+						    		response: "yes",
+						    		shape: clean_name,
+						    		question: shape_of_focus
+						    	};
+						    exp.data.push(trial_data);
 				}
 				examples_clicked = examples_clicked + 1;
 				guessed_shapes.push([i, j]);
@@ -468,57 +501,71 @@ exp = {
 
 
 	highlight_boxes: function(block) {
-
 		if (block == 1) {
-
 			var in_highlighted = 0;
 			for (i = 0; i < all_shapes.length; i++) {
 				for (j = 0; j < all_shapes[0].length; j++) {
 					for (ii = 0; ii < highlighted_boxes_block1.length; ii++) {
 						if (highlighted_boxes_block1[ii][0] == i && highlighted_boxes_block1[ii][1] == j) {
 							$("#tdchoice" + String(i) + '_' + String(j)).addClass('highlighted');
+							highlighted_shape_name = $("#tdchoice" + String(i) + '_' + String(j)).attr('src');
+							clean_name = highlighted_shape_name.slice(highlighted_shape_name.indexOf('/')+1, highlighted_shape_name.lastIndexOf('_'));
+							
+							trial_data = {
+								trial_type: "training",
+					    		block: block,
+					    		trial_num_within_block: "NA",
+					    		response: "yes",
+					    		shape: clean_name,
+					    		question: shape_of_focus
+					    	};
+					    	exp.data.push(trial_data);
 						}
+
 					}
 				}
 			}
-
 		} else {
-
 			var in_highlighted = 0;
 			for (i = 0; i < all_shapes.length; i++) {
 				for (j = 0; j < all_shapes[0].length; j++) {
 					for (ii = 0; ii < highlighted_boxes_block2.length; ii++) {
 						if (highlighted_boxes_block2[ii][0] == i && highlighted_boxes_block2[ii][1] == j) {
 							$("#tdchoice" + String(i) + '_' + String(j)).addClass('highlighted');
+							highlighted_shape_name = $("#tdchoice" + String(i) + '_' + String(j)).attr('src');
+							clean_name = highlighted_shape_name.slice(highlighted_shape_name.indexOf('/')+1, highlighted_shape_name.lastIndexOf('_'));
+
+							trial_data = {
+									trial_type: "training",
+						    		block: block,
+						    		trial_num_within_block: "NA",
+						    		response: "yes",
+						    		shape: clean_name,
+						    		question: shape_of_focus
+						    	};
+						    exp.data.push(trial_data);
 						}
 					}
 				}
 			}
-
 		};
-
 	},
 
 	select_highlighted_shape: function(i, j) {
-
 		var in_highlighted = 0;
 
 		if (block == 1) {
-
 			for (ii = 0; ii < highlighted_boxes_block1.length; ii++) {
 				if (highlighted_boxes_block1[ii][0] == i && highlighted_boxes_block1[ii][1] == j) {
 					in_highlighted = 1;
 				}
 			}
-
 		} else {
-
 			for (ii = 0; ii < highlighted_boxes_block2.length; ii++) {
 				if (highlighted_boxes_block2[ii][0] == i && highlighted_boxes_block2[ii][1] == j) {
 					in_highlighted = 1;
 				}
 			}
-
 		};
 
 		if (examples_clicked < 3 && in_highlighted == 1) {
@@ -527,6 +574,7 @@ exp = {
 						$("#tdchoice" + String(i) + '_' + String(j)).removeClass('highlighted').addClass('chosen');
 						examples_clicked = examples_clicked + 1;
 						guessed_shapes.push([i, j]);
+
 					} else {
 						$("#tdchoice" + String(i) + '_' + String(j)).removeClass('highlighted').addClass('chosenCorrect');
 						examples_clicked = examples_clicked + 1;

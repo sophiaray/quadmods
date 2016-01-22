@@ -22,7 +22,7 @@ library(tidyr)
 Set working directory to where you stored raw JSON files.
 
 ```{r}
-setwd("../raw-data/pilot-a/production-results")
+setwd("../raw-data/pilot/production-results")
 ```
 
 # Read in all the JSON strings
@@ -122,7 +122,8 @@ df_final <- df_final %>%
            question = ifelse(question == "rectangles", "rectangle", 
                           ifelse(question == "rhombuses", "rhombus", 
                                  ifelse(question == "squares", "square",
-                                        ifelse(question == "parallelograms", "parallelogram", question)))),
+                                        ifelse(question == "parallelograms", "parallelogram", 
+                                               ifelse(question == "2", "rhombus", question))))),
            shape_learned = ifelse(shape_learned == 2, "rhombus", shape_learned),
            question_and_shape = paste(question, shape, sep = '_')
            )
@@ -131,15 +132,8 @@ df_final <- df_final %>%
 Flag if a trial is correct
 
 ```{r}
-# takes in a row of a data frame
-# and based on values in that row
-# returns if the trial was correct or incorrect
-
-flag_correct <- function (trial) {
-    trial_type <- as.character(trial[which(names(trial)=="trial_type")])
-    question_and_shape <- as.character(trial[which(names(trial)=="question_and_shape")])
-    response <- as.character(trial[which(names(trial)=="response")])
-    
+# flag correct key
+flag_correct_key <- function (question_and_shape) {
     switch(question_and_shape,
            parallelogram_rectangle = {correct_answer <- "no"},
            rectangle_rhombus = {correct_answer <- "no"},
@@ -156,20 +150,31 @@ flag_correct <- function (trial) {
            parallelogram_parallelogram = {correct_answer <- "yes"},
            rhombus_rhombus = {correct_answer <- "yes"},
            square_square = {correct_answer <- "yes"},
-           rectangle_rectangle = {correct_answer <- "yes"}
-    )
+           rectangle_rectangle = {correct_answer <- "yes"})
     
-    # retun T/F for each trial
+    return(correct_answer)
+}
+
+# takes in a row of a data frame
+# and based on values in that row
+# returns if the trial was correct or incorrect
+
+flag_correct_trial <- function (trial) {
+    # grab stuff we need from the trial vector
+    question_and_shape <- as.character(trial[which(names(trial)=="question_and_shape")])
+    response <- as.character(trial[which(names(trial)=="response")])
+    # check answer key
+    correct_answer <- flag_correct_key(question_and_shape)
+    # check ss response against the key and return T/F for each trial
     correct <- response == correct_answer
-     return(correct)
+    return(correct)
 }
 
 # create a vector of correct/incorrect
-correct <- apply(df_final, 1, flag_correct)
+correct <- apply(df_final, 1, flag_correct_trial)
 
 # merge correct info with main df
 df_final <- cbind(df_final, correct)
-
 ```
 
 Anonymize
