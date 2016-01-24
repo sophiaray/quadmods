@@ -210,6 +210,7 @@ exp = {
   },
 
   entity_answers: function (test_id) {
+
     answers = [];
     counter = 0;
 
@@ -217,6 +218,7 @@ exp = {
     if (test_id == "pretest") {
     	$('#pretest_entity_table .entity_response img').each(function() {
 	    	answers.push($(this).hasClass("highlighted"));   
+	    	
 	    	// store data at trial level
 	    	if ($(this).hasClass("highlighted")) {
 	    		response = "yes";
@@ -235,9 +237,17 @@ exp = {
 	    	exp.data.push(trial_data);
 	    	counter++;
 	 	});
-    } else {
+    } else if (test_id == "posttest") {
+
     	$('#posttest_entity_table .entity_response img').each(function() {
 	    	answers.push($(this).hasClass("highlighted"));  
+
+	    	// store data at trial level
+	    	if ($(this).hasClass("highlighted")) {
+	    		response = "yes";
+	    	} else {
+	    		response = "no";
+	    	};
 
 	    	trial_data = {
 	    		trial_type: "entity",
@@ -258,7 +268,7 @@ exp = {
   entity_close: function(test_id){
   	if (test_id == "pretest") {
   		exp.e_pretest_responses = exp.entity_answers(test_id);
-  	} else {
+  	} else if (test_id == "posttest") {
   		exp.e_posttest_responses = exp.entity_answers(test_id);
   	}
   },

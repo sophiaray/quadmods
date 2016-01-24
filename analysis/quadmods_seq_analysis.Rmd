@@ -36,8 +36,10 @@ ci.high <- function(x,na.rm=T) {
 Load data.
 
 ```{r data_clean}
-d1 <- read.csv("../data/quadmods-sequences-1.csv", header=TRUE, 
+d1 <- read.csv("../data/quadmods-sequences-pilot.csv", header=TRUE, 
                row.names=NULL, stringsAsFactors = FALSE)
+
+d1$block <- factor(d1$block, levels = c("pretest", "posttest"))
 ```
 
 Descriptives
@@ -60,7 +62,6 @@ d1 %>%
     group_by(training_condition) %>% 
     summarise(m_train_time = (mean(training_time) / 1000) / 60,
               m_exp_time = (mean(exp_time) / 1000) / 60)
-
 ```
 
 ```{r}
@@ -72,30 +73,92 @@ ss <- d1 %>%
 ggplot(aes(x=exp_time_min), data = ss) +
     geom_histogram(binwidth = 0.2) +
     facet_grid(.~training_condition) 
-
 ```
 
 Visualization
 --------
 
-### Sanity check on pretest relational test
+### Relational pretest broken down by question and condition
 
-```{r, fig.width = 8, fig.height=6}
+```{r, fig.width=9, fig.height=6}
 ms <- d1 %>% 
-  filter(block == "pretest", trial_type %in% c("relational")) %>%
-  group_by(question_and_shape) %>%
+  filter(trial_type %in% c("relational")) %>%
+  group_by(question_and_shape, question, block, training_condition) %>%
   summarise(m.cih = ci.high(correct),
             m.cil = ci.low(correct),
             m = mean(correct))
 
-ggplot(aes(x = question_and_shape, y = m), data = ms) + 
+ggplot(aes(x = question_and_shape, y = m, fill = question), data = ms) + 
     geom_bar(stat="identity") +
     geom_linerange(aes( ymin = m - m.cil, ymax = m + m.cih)) +
     geom_hline(yintercept = .5, lty = 2) +
     ylim(0, 1) + 
-    theme(axis.text.x = element_text(angle = 65, hjust = 1))
-  
+    facet_grid(training_condition~block) +
+    scale_fill_solarized() +
+    theme(axis.text.x = element_text(angle = 65, hjust = 1)) +
+    ggtitle("Accuracy on each question: Relational Test")
 ```
+
+Seems reasonable -- participants are performing above chance for most questions. 
+
+The hardest questions were:
+
+* Is a parallelogram and rectangle?
+* Is a square a rhombus?
+
+But participants get worse after training? 
+
+### Sanity check on entity pretest for all 16 question_shape combinations 
+
+```{r, fig.width = 9, fig.height=6}
+ms <- d1 %>% 
+  filter(trial_type %in% c("entity")) %>%
+  group_by(question_and_shape, question, training_condition, block) %>%
+  summarise(m.cih = ci.high(correct),
+            m.cil = ci.low(correct),
+            m = mean(correct))
+
+ggplot(aes(x = question_and_shape, y = m, fill = question), data = ms) + 
+    geom_bar(stat="identity") +
+    geom_linerange(aes( ymin = m - m.cil, ymax = m + m.cih)) +
+    ylim(0, 1) + 
+    facet_grid(training_condition~block) +
+    scale_fill_solarized() +
+    theme(axis.text.x = element_text(angle = 65, hjust = 1)) +
+    ggtitle("Accuracy on each question: Entity Test")
+```
+
+- People are good at selecting the shape we ask for: PaPa, ReRe, RhRh, SqSq.
+- They are not likely to select other shapes for parallelograms or squares.
+- There is more disagreement between ss about rectangles and rhombi.
+- For rectangles, people also select rhombi.
+- For rhombi, people select rectangles.
+
+### Sanity check on entity pretest for shape questions
+
+```{r, fig.width = 6, fig.height=4}
+ms <- d1 %>% 
+  filter(trial_type %in% c("entity")) %>%
+  group_by(question, block) %>%
+  summarise(m.cih = ci.high(correct),
+            m.cil = ci.low(correct),
+            m = mean(correct))
+
+ggplot(aes(x = question, y = m), data = ms) + 
+    geom_bar(stat="identity") +
+    geom_linerange(aes( ymin = m - m.cil, ymax = m + m.cih)) +
+    ylim(0, 1) + 
+    facet_grid(.~block) +
+    theme(axis.text.x = element_text(angle = 65, hjust = 1)) +
+    ggtitle("Accuracy on each shape: Entity Test")
+```
+
+How do we define chance performance on the entity test? Chance level changes for each question:
+
+- Rectangle: 2/4 are rectangles
+- Parallelogram: 4/4 are paralleograms
+- Square: 1/4 are squares
+- Rhombus: 2/4 are rhombi
 
 ### Overall accuracy analysis for both entity and relational tests
 
@@ -107,34 +170,14 @@ ms <- d1 %>%
               m.cih = ci.high(correct),
               m.cil = ci.low(correct))
 
-ms$block <- factor(ms$block, levels = c("pretest", "posttest"))
+ms %<>% mutate(chance_line = ifelse(trial_type == "relational", 0.5, 0.5))
 
 ggplot(aes(x = block, y = m_acc, color = training_condition), data = ms) +
     geom_pointrange(aes(ymin = m_acc - m.cil, ymax = m_acc + m.cih)) +
     geom_line(aes(group=training_condition)) +
-    geom_hline(yintercept = 0.5, linetype = "dashed") +
-    ylim(0,1.0) +
+    geom_hline(aes(yintercept = chance_line), linetype = "dashed") +
+    ylim(0.4,1.0) +
     facet_grid(.~trial_type) +
-    scale_color_solarized() 
-```
-
-### Overall accuracy analysis for all shapes collapsing across entity and relational tests
-
-```{r}
-ms <- d1 %>% 
-    filter(trial_type %in% c("relational", "entity")) %>% 
-    group_by(training_condition, block = as.factor(block)) %>%
-    summarise(m_acc = mean(correct),
-              m.cih = ci.high(correct),
-              m.cil = ci.low(correct))
-
-ms$block <- factor(ms$block, levels = c("pretest", "posttest"))
-
-ggplot(aes(x = block, y = m_acc, color = training_condition), data = ms) +
-    geom_pointrange(aes(ymin = m_acc - m.cil, ymax = m_acc + m.cih)) +
-    geom_line(aes(group=training_condition)) +
-    geom_hline(yintercept = 0.5, linetype = "dashed") +
-    ylim(0,1.0) +
     scale_color_solarized() 
 ```
 
@@ -161,7 +204,7 @@ ggplot(aes(x = training_condition, y = m_change_score, fill = training_condition
     geom_hline(yintercept = 0) +
     facet_grid(.~trial_type) +
     scale_fill_solarized() +
-    ylim(-0.15, 0.15) + 
+    ylim(-0.45, 0.45) + 
     guides(fill=F)
 ```
 
@@ -182,12 +225,13 @@ ms_shape <- d_shape_learned %>%
               m.cil = ci.low(correct))
 
 ms_shape$block <- factor(ms_shape$block, levels = c("pretest", "posttest"))
+ms_shape %<>% mutate(chance_line = ifelse(trial_type == "relational", 0.5, 0.5))
 
 ggplot(aes(x = block, y = m_acc, color = training_condition), data = ms_shape) +
     geom_pointrange(aes(ymin = m_acc - m.cil, ymax = m_acc + m.cih)) +
     geom_line(aes(group=training_condition)) +
-    geom_hline(yintercept = 0.5, linetype = "dashed") +
-    ylim(0,1.0) +
+    geom_hline(aes(yintercept = chance_line), linetype = "dashed") +
+    ylim(0.4,1.0) +
     facet_grid(.~trial_type) +
     scale_color_solarized()
 ```
@@ -215,7 +259,7 @@ ggplot(aes(x = training_condition, y = m_change_score, fill = training_condition
     geom_hline(yintercept = 0) +
     facet_grid(.~trial_type) +
     scale_fill_solarized() +
-    ylim(-0.2, 0.2) + 
+    ylim(-0.4, 0.4) + 
     guides(fill=F)
 ```
 
@@ -244,11 +288,43 @@ mm2 <- glmer(correct ~ training_condition * block * trial_type + (1|subids) ,
 summary(mm2)
 ```
 
-
 ### Predict change scores for learned shape based on condition and test type
 
 ```{r, eval = F}
 mm3 <- lmer(m_diff_score ~ training_condition * trial_type + (1|subids) ,
              data = ss_acc_learned)
 summary(mm3)
+```
+
+Exploratory Analyses
+--------------------
+
+### Look at individual participants
+
+```{r}
+ss_m <- d1 %>% 
+    filter(trial_type %in% c("relational", "entity")) %>% 
+    group_by(subids, training_condition, block, trial_type) %>% 
+    summarise(m = mean(correct))
+
+ggplot(aes(x = block, y = m, color = training_condition, group = as.factor(subids)), data = ss_m) +
+    geom_point() +
+    geom_line() +
+    geom_jitter(width = 0.2) +
+    facet_grid(.~trial_type) +
+    scale_color_solarized() 
+```
+
+### Training time distribution for each condition
+
+```{r}
+ggplot(aes(x = train_time_min), data = ss) +
+    geom_histogram() +
+    facet_grid(.~training_condition)
+```
+
+Median split on training time for active learning
+
+```{r}
+ss %<>% mutate(active_learner_pace = cut(train_time_min, 2, labels = c("fast", "slow")))
 ```

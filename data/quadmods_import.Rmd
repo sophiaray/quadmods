@@ -1,5 +1,5 @@
 ---
-title: "quadmods_import"
+title: "Quadmods Import Script"
 author: "Kyle MacDonald"
 date: "January 16, 2016"
 output: html_document
@@ -13,6 +13,7 @@ about quadrilaterals.
 ```{r, message=FALSE}
 rm(list=ls())
 library(jsonlite)
+library(magrittr)
 library(plyr)
 library(dplyr)
 library(lubridate)
@@ -22,7 +23,7 @@ library(tidyr)
 Set working directory to where you stored raw JSON files.
 
 ```{r}
-setwd("../raw-data/pilot/production-results")
+setwd("../raw-data/pilot/production-results/")
 ```
 
 # Read in all the JSON strings
@@ -70,6 +71,7 @@ exp_df <- data.frame(
     training_time = assignments$answers$training_time,
     stringsAsFactors = F
 )
+
 ```
 
 ## Build trial level data frame
@@ -125,11 +127,40 @@ df_final <- df_final %>%
                                         ifelse(question == "parallelograms", "parallelogram", 
                                                ifelse(question == "2", "rhombus", question))))),
            shape_learned = ifelse(shape_learned == 2, "rhombus", shape_learned),
-           question_and_shape = paste(question, shape, sep = '_')
+           question_and_shape = ifelse(trial_type == "relational", paste(question, shape, sep = '_'),
+                                       paste(shape, question, sep = '_'))
            )
 ```
 
-Flag if a trial is correct
+## Fix posttest data storage
+
+Some code to recover entity posttest responses from the pilot data because 
+there was a bug in the javascript that screwed up the primary method of data storage.
+
+Note: this only should be run this on the first batch of 40 ss in the pilot data.
+
+```{r, eval = f}
+e_trial_data <- Map(function(id, e_post_test_responses, shape, question, trial_type, block) 
+    { cbind(workerid = id, e_post_test_responses, shape, question, trial_type, block) },
+                  assignments$WorkerId,
+                  assignments$answers$e_posttest_responses,
+                  assignments$answers$e_posttest_shape_order_as_presented,
+                  assignments$answers$e_posttest_q_order_as_presented,
+                  "entity",
+                  "posttest"
+)
+
+e_trial_data <- data.frame(strip.rownames(do.call(rbind, e_trial_data)))
+e_trial_data %<>% mutate(response_good = ifelse(e_post_test_responses == T, "yes", "no"))
+
+df_final <- left_join(df_final, e_trial_data)
+
+df_final %<>% mutate(response = ifelse(trial_type == "entity" & block == "posttest",
+                                           response_good, response)) %>% 
+    select(-e_post_test_responses, -response_good)
+```
+
+## Flag if a trial is correct
 
 ```{r}
 # flag correct key
@@ -195,5 +226,5 @@ df_final_clean <- select(df_final_clean, subids, everything())
 ## Save tidy data 
 
 ```{r}
-write.csv(x = df_final_clean, file = "../../../data/quadmods-sequences-1.csv", row.names=F)
+write.csv(x = df_final_clean, file = "../../../data/quadmods-sequences-pilot.csv", row.names=F)
 ```
