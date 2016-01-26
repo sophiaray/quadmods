@@ -23,7 +23,7 @@ library(tidyr)
 Set working directory to where you stored raw JSON files.
 
 ```{r}
-setwd("../raw-data/pilot/production-results/")
+setwd("../raw-data/quadmods_sequence_1/production-results/")
 ```
 
 # Read in all the JSON strings
@@ -71,8 +71,16 @@ exp_df <- data.frame(
     training_time = assignments$answers$training_time,
     stringsAsFactors = F
 )
-
 ```
+
+```{r}
+exp_df %>% 
+    select(workerid, training_condition) %>% 
+    distinct() %>% 
+    group_by(training_condition) %>% 
+    summarise(count = n()) 
+```
+
 
 ## Build trial level data frame
 
@@ -116,20 +124,28 @@ df_final$approval_time <- parse_date_time(
 - Make a variable that has both the question and the shape so we can easily see if the trial is correct
 
 ```{r}
-df_final <- df_final %>% 
-    mutate(shape = ifelse(shape == "rectangles", "rectangle", 
-                          ifelse(shape == "rhombuses", "rhombus", 
-                                 ifelse(shape == "squares", "square",
-                                        ifelse(shape == "parallelograms", "parallelogram", shape)))),
-           question = ifelse(question == "rectangles", "rectangle", 
-                          ifelse(question == "rhombuses", "rhombus", 
-                                 ifelse(question == "squares", "square",
-                                        ifelse(question == "parallelograms", "parallelogram", 
-                                               ifelse(question == "2", "rhombus", question))))),
+make_singular_shape_name <- function (name) {
+    correct_name <- name
+    switch(name,
+       rectangles = {correct_name <- "rectangle"},
+       rhombuses = {correct_name <- "rhombus"},
+       "2" = {correct_name <- "rhombus"},
+       squares = {correct_name <- "square"},
+       parallelograms = {correct_name <- "parallelogram"}
+    )
+    return(correct_name)
+}
+
+
+df_final %<>% 
+    rowwise() %>% 
+    mutate(shape = make_singular_shape_name(shape),
+           question = make_singular_shape_name(question),
+           question_old = question,
+           question = ifelse(trial_type == "entity", shape, question),
+           shape = ifelse(trial_type == "entity", question_old, shape),
            shape_learned = ifelse(shape_learned == 2, "rhombus", shape_learned),
-           question_and_shape = ifelse(trial_type == "relational", paste(question, shape, sep = '_'),
-                                       paste(shape, question, sep = '_'))
-           )
+           question_and_shape = paste(question, shape, sep = '_'))
 ```
 
 ## Fix posttest data storage
@@ -140,24 +156,24 @@ there was a bug in the javascript that screwed up the primary method of data sto
 Note: this only should be run this on the first batch of 40 ss in the pilot data.
 
 ```{r, eval = f}
-e_trial_data <- Map(function(id, e_post_test_responses, shape, question, trial_type, block) 
-    { cbind(workerid = id, e_post_test_responses, shape, question, trial_type, block) },
-                  assignments$WorkerId,
-                  assignments$answers$e_posttest_responses,
-                  assignments$answers$e_posttest_shape_order_as_presented,
-                  assignments$answers$e_posttest_q_order_as_presented,
-                  "entity",
-                  "posttest"
-)
-
-e_trial_data <- data.frame(strip.rownames(do.call(rbind, e_trial_data)))
-e_trial_data %<>% mutate(response_good = ifelse(e_post_test_responses == T, "yes", "no"))
-
-df_final <- left_join(df_final, e_trial_data)
-
-df_final %<>% mutate(response = ifelse(trial_type == "entity" & block == "posttest",
-                                           response_good, response)) %>% 
-    select(-e_post_test_responses, -response_good)
+# e_trial_data <- Map(function(id, e_post_test_responses, shape, question, trial_type, block) 
+#     { cbind(workerid = id, e_post_test_responses, shape, question, trial_type, block) },
+#                   assignments$WorkerId,
+#                   assignments$answers$e_posttest_responses,
+#                   assignments$answers$e_posttest_shape_order_as_presented,
+#                   assignments$answers$e_posttest_q_order_as_presented,
+#                   "entity",
+#                   "posttest"
+# )
+# 
+# e_trial_data <- data.frame(strip.rownames(do.call(rbind, e_trial_data)))
+# e_trial_data %<>% mutate(response_good = ifelse(e_post_test_responses == T, "yes", "no"))
+# 
+# df_final <- left_join(df_final, e_trial_data)
+# 
+# df_final %<>% mutate(response = ifelse(trial_type == "entity" & block == "posttest",
+#                                            response_good, response)) %>% 
+#     select(-e_post_test_responses, -response_good)
 ```
 
 ## Flag if a trial is correct
@@ -208,6 +224,14 @@ correct <- apply(df_final, 1, flag_correct_trial)
 df_final <- cbind(df_final, correct)
 ```
 
+```{r}
+df_final1$experiment <- "random_passive"
+df_final$experiment <- "positive_rh_passive"
+
+df_final <- bind_rows(df_final, df_final1)
+```
+
+
 Anonymize
 
 ```{r}
@@ -226,5 +250,5 @@ df_final_clean <- select(df_final_clean, subids, everything())
 ## Save tidy data 
 
 ```{r}
-write.csv(x = df_final_clean, file = "../../../data/quadmods-sequences-pilot.csv", row.names=F)
+write.csv(x = df_final_clean, file = "../../../data/quadmods-sequences-exp1_2.csv", row.names=F)
 ```

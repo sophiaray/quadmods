@@ -29,8 +29,8 @@ var training_conditions = ["active_passive", "passive_active", "active_active", 
 var numConditions = 4;
 
 try { 
-    var filename = "KM_quadmods_pilot_full";
-    var condCounts = "2,20;3,20";
+    var filename = "KM_quadmods_seq_2";
+    var condCounts = "2,50;3,50";
     var xmlHttp = null;
     xmlHttp = new XMLHttpRequest();
     xmlHttp.open( "GET", "https://langcog.stanford.edu/cgi-bin/KM/subject_equalizer_km/maker_getter.php?conds=" + condCounts + "&filename=" + filename, false );
@@ -39,6 +39,7 @@ try {
 } catch (e) {
     var cond = random(2,numConditions-1); // if maker-getter fails, generate condition number randomly
 }
+
 
 var training_condition = training_conditions[cond];
 
@@ -77,9 +78,13 @@ if (shape_of_focus == 3) {
 // Randomly generate the shapes that get highlighted (examples) in the passive condition
 // 0-2 used because training table contains 3 columns; 0-3 used because training table contains 4 rows
 // checkExamples function ensures that each example is unique 
-var highlighted_boxes_block1 = checkExamples([[random(0,3), random(0,2)], [random(0,3), random(0,2)], [random(0,3), random(0,2)]]); 
-var highlighted_boxes_block2 = checkExamples([[random(0,3), random(0,2)], [random(0,3), random(0,2)], [random(0,3), random(0,2)]]);
+// var highlighted_boxes_block1 = checkExamples([[random(0,3), random(0,2)], [random(0,3), random(0,2)], [random(0,3), random(0,2)]]); 
+// var highlighted_boxes_block2 = checkExamples([[random(0,3), random(0,2)], [random(0,3), random(0,2)], [random(0,3), random(0,2)]]);
 
+
+// This ise to give participants only positive examples of a rhombus
+var highlighted_boxes_block1 = [[2,0], [2,1], [2,2]]; 
+var highlighted_boxes_block2 = [[2,0], [2,1], [2,2]]; 
 
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

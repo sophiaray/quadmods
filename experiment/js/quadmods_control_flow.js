@@ -285,7 +285,6 @@ exp = {
 		var training_html = "";
 
 		// set up training slide based on block and condition
-
 		if (training_condition == "active_active") {
 			training_regime = 3; 
 		} else if (training_condition == "passive_passive") {
