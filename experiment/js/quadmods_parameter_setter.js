@@ -45,7 +45,7 @@ var training_condition = training_conditions[cond];
 
 
 // Number of examples to show. This is specifically for the case of training_regime == 3. If training_regime == 4
-// then you control the number of examples by editing the highlighted_boxes, which determines the specific examples used.
+// then you control the number of examples by editing the highlighted_boxes function, which determines the specific examples used.
 var examples_to_show = 3;
 
 
@@ -57,6 +57,7 @@ var examples_to_show = 3;
 // this does not affect condition 6
 // var to_choose_from = [1, 2, 3];
 // var shape_of_focus = choose_from(to_choose_from);
+
 var shape_of_focus = 2; // just teach about rhombus
 
 
