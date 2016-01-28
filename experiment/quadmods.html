@@ -11,14 +11,18 @@
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- custom -->
+    <link href="custom.css" rel="stylesheet">
+
+
     <!-- What does this js script do? -->
-    <script src="jquery.min.js"></script>
+    <script src="js/jquery.min.js"></script>
 
     <!--mmturkey manages submitting data to Mechanical Turk. This defines a global object, turk, and attaches five properties to it, hitId, assignmentId, workerId, previewMode, and turkSubmitTo. It also provides a single method, submit(data), which you use to submit data to Turk. If no submission URL has been provided (because, e.g. you're testing your code outside of the Turk environment), submit displays what would have been submitted (without, obviously, any Turk-specific variables like workerId and assignmentId). -->
-    <script src="mmturkey.js"></script>
+    <script src="js/mmturkey.js"></script>
 
-    <!-- What does this js script do? -->
-    <script src="underscore-min.js"></script>
+    <script src="js/underscore.js"></script>
+    <script src="js/purl.js"></script>
 
     <!-- The CSS stylesheet. Very conventional.  -->
     <link rel="stylesheet" href="style.css"/>
@@ -39,7 +43,7 @@
 
       <!-- If there is a familiarization stage then the next line should be active, otherwise the one after that should be active-->
       <!--<button type="button" onClick="this.blur(); experiment.pre_test_slide()">Start</button> -->
-      <button type="button" onClick="this.blur(); exp.relational_slide('pretest')">Start</button>
+      <!-- <button type="button" onClick="this.blur(); relational_slide('pretest')">Start</button> -->
 
       <!-- <button type="button" onClick="this.blur(); experiment.next_test()">Start</button> -->
 
@@ -52,63 +56,11 @@
       By answering the following questions, you are participating in a study being performed by cognitive scientists in the Stanford Department of Psychology. If you have questions about this research, please contact us at langcoglab@stanford.edu. You must be at least 18 years old to participate. Your participation in this research is voluntary. You may decline to answer any or all of the following questions. You may decline further participation, at any time, without adverse consequences. Your anonymity is assured; the researchers who have requested your participation will not receive any personal information about you. <br> <br>
 
       We have recently been made aware that your public Amazon.com profile can be accessed via your worker ID if you do not choose to opt out. If you would like to opt out of this feature, you may follow instructions available <a href ="http://www.amazon.com/gp/help/customer/display.html?nodeId=16465241"> here. </a>
-
+      <p><button type="button" onClick="relational_slide('pretest')">Next</button></p>
       </p>
     </div>
 
-    <!-- Relational Pretest -->
-    <div class = "slide" id = "relational_pretest">
-      <table align="center"><tr><td align="center">
-      <div id ="relational_pretest_questions"> </div> <!-- questions dynamically built in javascript-->
-      <button type="button" id="pretest_to_pretest2" onClick="exp.relational_close(); exp.entity_slide('pretest')">Next</button>
-      <div id="pre_test_check"> </div>
-      </td></tr>
-      </table>
-    </div>
-
-    <!-- Entity Pretest-->
-    <div class = "slide" id = "entity_pretest">
-      <table align="center"><tr><td align="center">
-      <div id ="entity_pretest_questions"> </div> <!-- questions dynamically built in javascript-->
-      <button type="button" id="entity_to_training" onClick="exp.entity_close(); exp.training_slide()">Next</button>
-      <div id="pre_test_check"> </div>
-      </td></tr>
-      </table>
-    </div>
-
-    <!-- training slide -->
-    <div class = "slide" id ="training">
-      <div id = "training_examples"> </div>
-      <table align="center"><tr><td align="center">
-        <button type="button" id="training_to_posttest" onClick="exp.training_test_check()">Next</button>
-        <div id="training_check"> </div><!--dynamically built in javascript-->
-        </td></tr></table>
-    </div>
-
-    <!-- post test -->
-    <div class = "slide" id = "post_test">
-      <table align="center"><tr><td align="center">
-        <div id ="post_test_questions"> </div> <!-- questions dynamically built in javascript-->
-        <button type="button" id="posttest_to_posttest2" onClick="exp.second_test_check()">Next</button>
-        <div id="post_test_check"> </div>
-        </td></tr>
-      </table>
-    </div>
-
-    <!-- Entity Posttest-->
-    <div class = "slide" id = "entity_posttest">
-      <table align="center"><tr><td align="center">
-      <div id ="entity_posttest_questions"> </div> <!-- questions dynamically built in javascript-->
-      <button type="button" id="posttest_to_postest2" onClick="exp.entity_close(); exp.final_slide()">Next</button>
-      <div id="post_test_check"> </div>
-      </td></tr>
-      </table>
-    </div>
-
-
-
-
-    <div class = "slide" id = "final_questions">
+    <div class = "slide" id = "survey">
     <center> Please answer the top question. The remaining questions are optional. <br> <br>
       <p class="block-text">
         What was this survey about? <br>
@@ -127,7 +79,7 @@
         <input type="text" id="gender" name="gender" size="70">
       </p>
       <table align="center"><tr><td align="center">
-        <button type="button" id="checkFinishedButton" onClick="exp.check_finished()">Finished</button>
+        <button type="button" id="checkFinishedButton" onClick="check_finished()">Finished</button>
         <div id="checkMessage"> </div><!--dynamically built in javascript-->
         </td></tr></table>
     </div>
@@ -141,13 +93,7 @@
 
 
     <!-- The js scripts delaration section. To improve functionality there are a few js scripts so that parameters can be more easily set and functions be edited. The first one is pragmods_helper_functions_c1.js which contains simple functions. Note that these .js need to be declared in a proper order. -->
-    <script src="quadmods_helper_functions.js"></script>
-
-    <!-- This .js file will set the variable random parameters of the experiment. When it comes to vectorize the parameters of the experiment using this -->
-    <script src="quadmods_parameter_setter.js"></script>
-
-    <!-- This .js file is in charge of controlling the dynamic glow of the activities including constructing the text that is used in the familiarization task and -->
-    <script src="quadmods_control_flow.js"></script>
+    <script src="quadmods.js"></script>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>

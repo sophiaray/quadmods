@@ -63,8 +63,6 @@ button[disabled] {
 	cursor: not-allowed;
 }
 
-
-
 /**
 ## Experiment-specific styles
 This stuff will vary by experiment.
@@ -78,26 +76,16 @@ This stuff will vary by experiment.
     border: 5px dashed green;
 }
 
-.withoutHover {
-    border: 5px solid white;
-}
-
-.chosen {
-    border: 5px solid red;
-}
-
 .chosenCorrect {
     border: 5px solid blue;
 }
-
 
 .highlighted {
     border: 5px dashed green;
 }
 
-
-.notChoices {
-	border: 0px solid red;
+.chosenIncorrect {
+	border: 5px solid red;
 }
 
 
