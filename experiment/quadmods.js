@@ -6,17 +6,18 @@ shapes = ["square", "rectangle", "rhombus", "parallelogram"];
 exp = {
   num_examples_to_show: 3,
   num_examples_clicked: 0,
-  instruction_wait_time: 3, //in seconds
+  instruction_wait_time: 3,
 }
 
 // urls are of the form: https://website.com/?shape=0&condition=0&assignmentId=123RVWYBAZW00EXAMPLE456RVWYBAZW00EXAMPLE&hitId=123RVWYBAZW00EXAMPLE&turkSubmitTo=https://www.mturk.com/&workerId=AZ3456EXAMPLE
 
 // the shape parameter is either 0,1,2,3, or r for the items in the `shapes` list or random
-// the condition parameter is either 0,1,2, or r for items in the `conditions` list or random
+// the condition parameter is either 0,1,2,3, or r for items in the `conditions` list or random
 
 //set parameters based on url
 url = $.url()
-shape_param = url.attr('shape'); cond_param = url.attr('condition')
+shape_param = url.attr('shape') || 'r'
+cond_param = url.attr('condition') || 'r'
 exp.shape =  shape_param == 'r' ? _.sample(shapes) : shapes[shape_param]
 exp.condition =  cond_param == 'r' ? _.sample(conditions) : conditions[shape_param]
 
@@ -25,10 +26,26 @@ exp.condition =  cond_param == 'r' ? _.sample(conditions) : conditions[shape_par
 
 pluralize_shapes = {"square":"squares", "rectangle":"rectangles", "rhombus":"rhombuses", "parallelogram":"parallelograms"};
 subset_shapes = { 
-  "parallelogram": ["square", "rhombus", "rectangle", "parallelogram"],
-  "rectangle": ["square","rectangle"],
-  "rhombus": ["square", "rhombus"],
-  "square": ["square"]
+  "parallelogram": {
+    "square":true, 
+    "rhombus":true, 
+    "rectangle":true, 
+    "parallelogram":true},
+  "rectangle": {
+    "square":true, 
+    "rhombus":false, 
+    "rectangle":true, 
+    "parallelogram":false},
+  "rhombus": {
+    "square":true, 
+    "rhombus":true, 
+    "rectangle":false, 
+    "parallelogram":false},
+  "square": {
+    "square":true, 
+    "rhombus":false, 
+    "rectangle":false, 
+    "parallelogram":false},
 }
 shape_pairs = []
 for (shape1 of shapes) {
@@ -37,6 +54,19 @@ for (shape1 of shapes) {
       shape_pairs.push([shape1, shape2])
     }
   }
+}
+
+function score_entity() {
+  scores = {}
+  for (q_shape of shapes) {
+    scores[q_shape] = 0
+    for (a_shape of shapes) {
+      correct = exp["e_pretest"][`${q_shape}_${a_shape}`] == subset_shapes[q_shape][a_shape]
+      scores[q_shape] += correct
+    }
+  }
+  exp["e_scores"] = scores
+  return scores
 }
 
 // each of these should have a div in the html file
@@ -48,9 +78,27 @@ for (shape1 of shapes) {
 
 // the slide array is a stack. next_slide pops off the top and executes a constructor and destructor. the order the slides should be in might seem opposite of what's expected. like [last_slide, ..., second_slide, first_slide]
 slides= [
-  { name: "final",
-    constructor: function() {return 0},
-    destructor: function() {return 0},},
+  // { name: "final",
+  //   constructor: function() {return 0},
+  //   destructor: function() {return 0},},
+  // { name: "survey",
+  //   constructor: survey_constructor,
+  //   destructor: survey_destructor },
+  { name: "relational_posttest",
+    constructor: function() { relational_slide("posttest") },
+    destructor: function () {return "boop"} },
+  { name: "entity_posttest",
+    constructor: function() { entity_slide("posttest") },
+    destructor: function () {return "boop"} },
+  // { name: "training",
+  //   constructor: training_constructor,
+  //   destructor: training_destructor },
+  { name: "relational_pretest",
+    constructor: function() { relational_slide("pretest") },
+    destructor: function () {return "boop"} },
+  { name: "entity_pretest",
+    constructor: function() { entity_slide("pretest") },
+    destructor: function () {return "boop"} },
   { name: "instructions",
     constructor: instructions_constructor,
     destructor: instructions_destructor }
@@ -60,7 +108,6 @@ function show_next_slide(slides) {
   next_slide = slides.pop()
   next_slide.constructor()
   next_slide.destructor()
-  return slides
 }
 
 show_next_slide(slides)
@@ -68,33 +115,34 @@ show_next_slide(slides)
 // "entity_pretest", "relational_pretest", "training", "entity_posttest", "relational_posttest", "survey", "goodbye"]
 
 function instructions_constructor() {
-  slide = $("<div class='slide' id='instructions' >")
+  slide = $("<div class='slide' id='instructions-slide' >")
+  text = $("<div class='block-text' id='instructions-text'>"); slide.append(text)
   // slide.append($("<img src='images/stanford.png' alt='Stanford University'>"))
-  slide.append($("<p>").html("In this experiment, we're interested in your judgments about the membership of shapes into geometric classes. First you will answer some questions, then you will be shown a series of examples, and then you will be asked to answer additional question. It should take about 5 minutes."))
-  slide.append($("<p>").html("(Note: you won't be able to preview this HIT before accepting it because it's so short.)"))
-  slide.append($("<p>").html("By answering the following questions, you are participating in a study being performed by cognitive scientists in the Stanford Department of Psychology. If you have questions about this research, please contact us at langcoglab@stanford.edu. You must be at least 18 years old to participate. Your participation in this research is voluntary. You may decline to answer any or all of the following questions. You may decline further participation, at any time, without adverse consequences. Your anonymity is assured; the researchers who have requested your participation will not receive any personal information about you."))
-  slide.append($("<p>").html("We have recently been made aware that your public Amazon.com profile can be accessed via your worker ID if you do not choose to opt out. If you would like to opt out of this feature, you may follow instructions available <a href ='http://www.amazon.com/gp/help/customer/display.html?nodeId=16465241'> here.  </a>"))
-
-  
+  text.append($("<p>").html("In this experiment, we're interested in your judgments about the membership of shapes into geometric classes. First you will answer some questions, then you will be shown a series of examples, and then you will be asked to answer additional question. It should take about 5 minutes."))
+  text.append($("<p>").html("(Note: you won't be able to preview this HIT before accepting it because it's so short.)"))
+  text.append($("<p>").html("By answering the following questions, you are participating in a study being performed by cognitive scientists in the Stanford Department of Psychology. If you have questions about this research, please contact us at langcoglab@stanford.edu. You must be at least 18 years old to participate. Your participation in this research is voluntary. You may decline to answer any or all of the following questions. You may decline further participation, at any time, without adverse consequences. Your anonymity is assured; the researchers who have requested your participation will not receive any personal information about you."))
+  text.append($("<p>").html("We have recently been made aware that your public Amazon.com profile can be accessed via your worker ID if you do not choose to opt out. If you would like to opt out of this feature, you may follow instructions available <a href ='http://www.amazon.com/gp/help/customer/display.html?nodeId=16465241'> here.  </a>"))
+  text.append($("<p>").html("The button to proceed is delayed for 3 seconds to ensure that you have read these instructions."))
   $("body").append(slide)
   $(".slide").hide(); slide.show()
-
 }
 
 function instructions_destructor () {
   // wait x*1,000 milliseconds
   setTimeout(function(){
     console.log("times up")
-    $("#instructions").append(
+    $("#instructions-text").append(
       $("<p>").append(
         $("<button>").text("Next").click(function(){
-
+          show_next_slide(slides)
         })))
   },1000*exp.instruction_wait_time)
 }
 
 //make a slide for the relational test. Assumes that the HTML for the #relational_${test_id} div is already on page.
 function relational_slide(test_id) {
+  slide = $(`<div class='slide' id='relational_${test_id}' >`)
+  text = $(`<div class='block-text' id='relational_text_${test_id}'>`); slide.append(text)
   table = $("<table align='center'>")
   for (pair of _.shuffle(shape_pairs)) {
     shape1 = pair[0]; shape2 = pair[1]
@@ -104,7 +152,7 @@ function relational_slide(test_id) {
       row.append(
         $("<td>").text(`Are all ${shape1} also ${shape2}?`),
         $(`<div class='btn-group' id=${q_id}>`).append(
-          $(`<button class="btn btn-primary">`)
+          $(`<button class="btn btn-primary btn-relational">`)
             .text('Yes')
             .click( relational_click ),
           $(`<button class="btn btn-danger">`)
@@ -115,85 +163,73 @@ function relational_slide(test_id) {
       table.append(row)
     }
   }
-  $(`#relational_${test_id}`).append(
-    $('<p>').html("Let us start with some questions."),
+  text.append(
+    $('<p>').html("Now for a few questions."),
     $('<p>').html("Please answer yes or no on each of the questions:"),
-    table
-    )
-  show_slide(`relational_${test_id}`)
+    table)
+  $("body").append(slide)
+  $(".slide").hide(); slide.show()
 }
 
 function relational_click() {
+  // get id
+  test_id = $(this).parents(".slide").attr("id").split("_").pop()
+ 
+  console.log(test_id)
   // change which one is active
   $(this).addClass('active')
   $(this).siblings().removeClass( 'active' ) 
   //grab data from elements using jquery-fu
   question_divs = $(this).parent().parent().siblings().addBack().children("div")
-  exp.r_pretest_questions = _.map(question_divs, function(q){ return $(q).attr("id")})
-  exp.r_pretest_answers = _.map(question_divs, function(q){ 
+  exp["r_questions_" +test_id] = _.map(question_divs, function(q){ return $(q).attr("id")})
+  exp["r_answers_" +test_id] = _.map(question_divs, function(q){ 
     return $(q).children(".active").text() })
 
-  if (_.every(exp.r_pretest_answers)) {
-    current_slide = $(this).parentsUntil(".slide")
-    current_test = current_test.attr("id")
-      
-    $(this).parentsUntil(".slide").append(
+  if (_.every(exp["r_answers_" +test_id])) {      
+    $(this).parents(".block-text").append(
       $("<p>").append(
-        $("<butto>").text("Next").click(function(){
-          return "crap"
+        $("<button>").text("Next").click(function(){
+          show_next_slide(slides)
         })))
   }
 }
 
-// grab the answers from a relational slide
-function relational_answers(test_id) {
-  answers = []
-  for (pair in shape_pairs) {
-    shape1 = pair[0]; shape2 = pair[1]
-    answers.push($(`#r_${test_id}_${shape1}_${shape2} .active`).attr('data-value'))
-  }
-  return answers
-}
-
-//grab both by default
-function relational_close() {
-  exp.r_pretest_response = relational_answers("pretest")
-  exp.r_posttest_response = relational_answers("posttest")
-}
-
 function entity_slide(test_id) {
-  question_html = ""
+  slide = $(`<div class='slide' id='relational_${test_id}' >`)
+  text = $(`<div class='block-text' id='relational_text_${test_id}'>`); slide.append(text)
+  text.append(
+      $("<p>").html("In the following questions please select <i>all</i> correct answers."))
   for (q_shape of _.shuffle(shapes)) {
-    answer_html = ""
+    table = $("<table align='center'>"); row = $("<tr>")
+    text.append(
+      $("<p>").html(`Which is a ${q_shape}?`),
+      table.append(row))
     for (a_shape of _.shuffle(shapes)) {
       a_id = `e_${test_id}_${q_shape}_${a_shape}`
       a_img_src = `shapes/${a_shape}_${_.random(1,3)}.png`
-      answer_html += `<td> <img id="${a_id}" class="withoutHover objTable" width="100px" height="100px" src="${a_img_src}" onclick="$('#${a_id}').toggleClass('highlighted')"> </td>`
+      row.append(
+        $("<td>").append(
+          $(`<img id="${a_id}" class="withoutHover objTable" width="100px" height="100px" src="${a_img_src}">`).click(
+            entity_click)))
     }
-    question_html += `<br> Which is a ${q_shape}? <br> <table align="center"> <tr> ${answer_html} </tr> </table>`
   }
-  entity_html = `In the following questions please select <i>all</i> correct answers. <br> ${question_html} `
-  $(`#entity_${test_id}_questions`).html(entity_html)
-  show_slide(`entity_${test_id}`)
+  text.append($("<p>").append($("<button>").text("Next").click(
+    function(){ show_next_slide(slides) })))
+  $("body").append(slide)
+  $(".slide").hide(); slide.show()
 }
 
-function entity_answers(test_id) {
-  answers = []
+function entity_click() {
+  test_id = $(this).parents(".slide").attr("id").split("_").pop()
+  $(this).toggleClass("highlighted")
+  responses = {}
   for (q_shape of shapes) {
-    row_answers = []
     for (a_shape of shapes) {
-      row_answers.push( $(`#e_${test_id}_${q_shape}_${a_shape}`).hasClass("highlighted") )
+      responses[`${q_shape}_${a_shape}`] = $(`#e_${test_id}_${q_shape}_${a_shape}`).hasClass("highlighted")
     }
-    answers.push(row_answers)
   }
-  return answers
+  exp[`e_${test_id}`] = responses
 }
-
-function entity_close(){
-  exp.e_pretest_response = entity_answers("pretest")
-  exp.e_posttest_response = entity_answers("posttest")
-}
-
 
 function baseline_training (){
 return ""
@@ -204,6 +240,10 @@ return ""
 }
 
 function responsive_training (){
+  scores = score_entity()
+  min_score = _.min(score_entity()) // run code to score entity test
+  min_shapes = _.filter(_.keys(scores))
+
 return ""
 }
 

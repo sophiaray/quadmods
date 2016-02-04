@@ -21,6 +21,7 @@ body {
 	margin: 0;
 	margin-left: 0.5%;
 	padding: 1% 2% 1% 2%;
+  text-align: left;
 }
 
 input, select, button {font-family: Georgia, serif; font-size: 14px;}
@@ -97,7 +98,7 @@ This stuff will vary by experiment.
   font-weight: bold;
 }
 
-#instructions {
+.slide {
   text-align: center;
 }
 
