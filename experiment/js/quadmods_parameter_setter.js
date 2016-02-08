@@ -13,9 +13,9 @@ var questions_permuted = 1;
 // 0 means no skip, 1 means it skips
 var skip_check = 0;
 
-// Block information 
+// Controls the number of training blocks in the experiment 
 var block = 0;
-var num_blocks = 2;
+var num_blocks = 8;
 
 // Training regime
 // 0 delivers an uninformative table of examples.
@@ -28,9 +28,9 @@ var num_blocks = 2;
 var training_conditions = ["active_passive", "passive_active", "active_active", "passive_passive"]
 var numConditions = 4;
 
-try { 
-    var filename = "KM_quadmods_seq_2";
-    var condCounts = "2,50;3,50";
+/*try { 
+    var filename = "KM_quadmods_passive_8";
+    var condCounts = "3,50";
     var xmlHttp = null;
     xmlHttp = new XMLHttpRequest();
     xmlHttp.open( "GET", "https://langcog.stanford.edu/cgi-bin/KM/subject_equalizer_km/maker_getter.php?conds=" + condCounts + "&filename=" + filename, false );
@@ -38,7 +38,9 @@ try {
     var cond = xmlHttp.responseText; // For actual experimental runs
 } catch (e) {
     var cond = random(2,numConditions-1); // if maker-getter fails, generate condition number randomly
-}
+}*/
+
+cond = 3;
 
 
 var training_condition = training_conditions[cond];
@@ -178,11 +180,11 @@ var all_shapes = [["square_1.png", "square_2.png", "square_3.png"], ["rectangle_
 ["rhombus_1.png", "rhombus_2.png", "rhombus_3.png"], ["parallelogram_1.png", "parallelogram_2.png", "parallelogram_3.png"]];
 
 var isSquare = [1, 0, 0, 0];
-var isRectanlge = [1, 1, 0, 0];
+var isRectangle = [1, 1, 0, 0];
 var isRhombus = [1, 0, 1, 0];
 var isParallelogram = [1, 1, 1, 1];
 
-var isShape = [isSquare, isRectanlge, isRhombus, isParallelogram];
+var isShape = [isSquare, isRectangle, isRhombus, isParallelogram];
 
 // Here is where you set which training regime to use
 /*if (training_condition == "uninformative_training") {

@@ -349,6 +349,9 @@ exp = {
 		// Passive learning condition
 		if (training_regime == 4) {
 
+			// shuffle the table of shapes
+			all_shapes = shuffle(all_shapes);
+
 			if (block == 1) {
 				training_html +=  "We are learning about what a <b>" + singular_shapes[shape_of_focus] +  "</b> is. <br><br>";
 			} else if (block == 2) {
@@ -364,6 +367,8 @@ exp = {
 			for (i = 0; i < 4; i++) {
 				training_html += '<tr>';
 				for (j = 0; j < 3; j++) {
+					// grab shape name from all_shapes variable
+					console.log(all_shapes[i][j]);
 					training_html += '<td><img width=100px height=100px class="withoutHover objTable" id="tdchoice' + String(i) + '_' + String(j) + '"  onclick="exp.select_highlighted_shape(' + String(i) + ',' + String(j) + ')" src=shapes/' + all_shapes[i][j] + '></td>';
 				}
 				training_html += '</tr>';
@@ -673,7 +678,7 @@ exp = {
 	},
 
 
-   // FINISHED BUTTON CHECKS EVERYTHING AND THEN ENDS
+   // FINISHED BUTTON CHECKS EVERYTHING AND THEN ENDS EXPERIMENT
     check_finished: function() {
 		if (document.getElementById('about').value.length < 1) {
 		    $("#checkMessage").html('<font color="red">' +

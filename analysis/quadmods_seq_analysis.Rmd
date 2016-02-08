@@ -11,7 +11,7 @@ knitr::opts_chunk$set(warning=FALSE, message=FALSE, sanitize = T,
                       fig.height=4, fig.width=7, echo=F, cache = T)
 ```
 
-```{r prelims}
+```{r}
 library(langcog)
 library(dplyr)
 library(ggplot2)
@@ -22,9 +22,7 @@ library(bootstrap)
 library(magrittr)
 library(stringr)
 theme_set(theme_bw())
-```
 
-```{r}
 ## for bootstrapping 95% confidence intervals
 theta <- function(x,xdata,na.rm=T) {mean(xdata[x],na.rm=na.rm)}
 ci.low <- function(x,na.rm=T) {
@@ -38,9 +36,7 @@ Load data.
 ```{r data_clean}
 d1 <- read.csv("../data/quadmods-sequences-exp1_2.csv", header=TRUE, 
                row.names=NULL, stringsAsFactors = FALSE)
-```
 
-```{r}
 d1$block <- factor(d1$block, levels = c("pretest", "posttest"))
 d1 <- d1 %>% 
     filter(training_condition %in% c("active_active", "passive_passive")) %>% 
@@ -67,9 +63,7 @@ d1 %>%
     group_by(training_condition, experiment) %>% 
     summarise(m_train_time = (mean(training_time) / 1000) / 60,
               m_exp_time = (mean(exp_time) / 1000) / 60)
-```
 
-```{r}
 ss <- d1 %>% 
     distinct(subids) %>% 
     mutate(train_time_min = (training_time / 1000) / 60,
@@ -124,9 +118,7 @@ d1 <- ss_diff_scores %>%
     select(subids, remove, trial_type) %>%
     distinct() %>% 
     left_join(d1, .)
-```
 
-```{r}
 d1 <- filter(d1, remove == "no")
 ```
 
@@ -134,12 +126,12 @@ d1 <- filter(d1, remove == "no")
 Visualization
 --------
 
-### Relational pretest broken down by question and condition
+### Relational test broken down by question and block
 
 ```{r, fig.width=9, fig.height=6}
 ms <- d1 %>% 
   filter(trial_type %in% c("relational")) %>%
-  group_by(question_and_shape, question, block, training_condition, experiment) %>%
+  group_by(question_and_shape, question, block) %>%
   summarise(m.cih = ci.high(correct),
             m.cil = ci.low(correct),
             m = mean(correct))
@@ -149,18 +141,17 @@ ggplot(aes(x = question_and_shape, y = m, fill = block), data = ms) +
     geom_linerange(aes( ymin = m - m.cil, ymax = m + m.cih),  position = position_dodge(width = 0.9)) +
     geom_hline(yintercept = .5, lty = 2) +
     ylim(0, 1) + 
-    facet_grid(training_condition~experiment) +
     scale_fill_solarized() +
     theme(axis.text.x = element_text(angle = 30, hjust = 1)) +
     ggtitle("Accuracy on each question: Relational Test")
 ```
 
-### Sanity check on entity pretest for all 16 question_shape combinations 
+### Entity tests broken down by question and block
 
 ```{r, fig.width = 9, fig.height=6}
 ms <- d1 %>% 
   filter(trial_type %in% c("entity")) %>%
-  group_by(question_and_shape, question, training_condition, block, experiment) %>%
+  group_by(question_and_shape, question, block) %>%
   summarise(m.cih = ci.high(correct),
             m.cil = ci.low(correct),
             m = mean(correct))
@@ -169,55 +160,53 @@ ggplot(aes(x = question_and_shape, y = m, fill = block), data = ms) +
     geom_bar(stat="identity", position="dodge") +
     geom_linerange(aes( ymin = m - m.cil, ymax = m + m.cih),  position = position_dodge(width = 0.9)) +
     ylim(0, 1) + 
-    facet_grid(training_condition~experiment) +
     scale_fill_solarized() +
     theme(axis.text.x = element_text(angle = 30, hjust = 1)) +
     ggtitle("Accuracy on each question: Entity Test")
 ```
 
-## Overall accuracy analysis for both entity and relational tests
+## Overall accuracy analysis for each test
 
 ```{r}
 ms <- d1 %>% 
     filter(trial_type %in% c("relational", "entity")) %>% 
-    group_by(training_condition, trial_type, block = as.factor(block), experiment) %>%
+    group_by(trial_type, block = as.factor(block)) %>%
     summarise(m_acc = mean(correct),
               m.cih = ci.high(correct),
               m.cil = ci.low(correct))
 
 ms %<>% mutate(chance_line = ifelse(trial_type == "relational", 0.5, 0.5))
 
-ggplot(aes(x = block, y = m_acc, color = training_condition), data = ms) +
+ggplot(aes(x = block, y = m_acc), data = ms) +
     geom_pointrange(aes(ymin = m_acc - m.cil, ymax = m_acc + m.cih)) +
-    geom_line(aes(group=training_condition)) +
+    geom_line(aes(group=1)) +
     geom_hline(aes(yintercept = chance_line), linetype = "dashed") +
     ylim(0.4,1.0) +
-    facet_grid(trial_type~experiment) +
+    facet_grid(.~trial_type) +
     scale_color_solarized() 
 ```
 
-### Within subjects change scores all shapes
+### Within subjects change scores for all shapes
 
 ```{r}
 ss_acc <- d1 %>% 
     filter(trial_type %in% c("relational", "entity")) %>% 
-    group_by(subids, training_condition, block, trial_type, experiment) %>% 
+    group_by(subids, block, trial_type) %>% 
     summarise(m_acc = mean(correct)) %>% 
     spread(key = block, value = m_acc) %>% 
     mutate(m_diff_score = posttest - pretest)
 
 ms_change <- ss_acc %>% 
-    group_by(training_condition, trial_type, experiment) %>% 
+    group_by(trial_type) %>% 
     summarise(m_change_score = mean(m_diff_score),
               m.cih = ci.high(m_diff_score),
               m.cil = ci.low(m_diff_score))
 
-ggplot(aes(x = training_condition, y = m_change_score, fill = training_condition), 
+ggplot(aes(x = trial_type, y = m_change_score, fill = trial_type), 
        data = ms_change) +
     geom_bar(stat = "identity") +
     geom_linerange(aes(ymin = m_change_score - m.cil, ymax = m_change_score + m.cih)) +
     geom_hline(yintercept = 0) +
-    facet_grid(trial_type~experiment) +
     scale_fill_solarized() +
     ylim(-0.1, 0.1) + 
     guides(fill=F)
@@ -234,7 +223,7 @@ d_shape_learned <- filter(d1, question == shape_learned | shape == shape_learned
 ```{r, fig.width=9, fig.height=6}
 ms <- d_shape_learned %>% 
   filter(trial_type %in% c("relational")) %>%
-  group_by(question_and_shape, question, block, training_condition, experiment) %>%
+  group_by(question_and_shape, question, block) %>%
   summarise(m.cih = ci.high(correct),
             m.cil = ci.low(correct),
             m = mean(correct))
@@ -244,10 +233,9 @@ ggplot(aes(x = question_and_shape, y = m, fill = block), data = ms) +
     geom_linerange(aes( ymin = m - m.cil, ymax = m + m.cih),  position = position_dodge(width = 0.9)) +
     geom_hline(yintercept = .5, lty = 2) +
     ylim(0, 1) + 
-    facet_grid(training_condition~experiment) +
     scale_fill_solarized() +
     theme(axis.text.x = element_text(angle = 30, hjust = 1)) +
-    ggtitle("Accuracy on each question: Relational Test")
+    ggtitle("Rhombus: Relational Test")
 ```
 
 ### Entity tests for learned shape
@@ -255,7 +243,7 @@ ggplot(aes(x = question_and_shape, y = m, fill = block), data = ms) +
 ```{r, fig.width = 9, fig.height=6}
 ms <- d_shape_learned %>% 
   filter(trial_type %in% c("entity")) %>%
-  group_by(question_and_shape, question, training_condition, block, experiment) %>%
+  group_by(question_and_shape, question, block) %>%
   summarise(m.cih = ci.high(correct),
             m.cil = ci.low(correct),
             m = mean(correct))
@@ -264,19 +252,17 @@ ggplot(aes(x = question_and_shape, y = m, fill = block), data = ms) +
     geom_bar(stat="identity", position="dodge") +
     geom_linerange(aes( ymin = m - m.cil, ymax = m + m.cih),  position = position_dodge(width = 0.9)) +
     ylim(0, 1) + 
-    facet_grid(training_condition~experiment) +
     scale_fill_solarized() +
     theme(axis.text.x = element_text(angle = 30, hjust = 1)) +
-    ggtitle("Accuracy on each question: Entity Test")
+    ggtitle("Rhombus: Entity Test")
 ```
 
-
-### Overall accuracy analysis for both entity and relational tests
+### Overall accuracy change on Rhombus
 
 ```{r}
 ms_shape <- d_shape_learned %>% 
     filter(trial_type %in% c("relational", "entity")) %>% 
-    group_by(training_condition, trial_type, block = as.factor(block), experiment) %>%
+    group_by(trial_type, block = as.factor(block)) %>%
     summarise(m_acc = mean(correct),
               m.cih = ci.high(correct),
               m.cil = ci.low(correct))
@@ -284,37 +270,36 @@ ms_shape <- d_shape_learned %>%
 ms_shape$block <- factor(ms_shape$block, levels = c("pretest", "posttest"))
 ms_shape %<>% mutate(chance_line = ifelse(trial_type == "relational", 0.5, 0.5))
 
-ggplot(aes(x = block, y = m_acc, color = training_condition), data = ms_shape) +
+ggplot(aes(x = block, y = m_acc), data = ms_shape) +
     geom_pointrange(aes(ymin = m_acc - m.cil, ymax = m_acc + m.cih)) +
-    geom_line(aes(group=training_condition)) +
+    geom_line(aes(group=1)) +
     geom_hline(aes(yintercept = chance_line), linetype = "dashed") +
     ylim(0.4,1.0) +
-    facet_grid(trial_type ~ experiment) +
+    facet_grid(.~trial_type) +
     scale_color_solarized()
 ```
 
-### Within subjects change scores for learned shape
+### Within subjects change scores for Rhombus
 
 ```{r}
 ss_acc_learned <- d_shape_learned %>% 
     filter(trial_type %in% c("relational", "entity")) %>% 
-    group_by(subids, training_condition, block, trial_type, experiment) %>% 
+    group_by(subids, block, trial_type) %>% 
     summarise(m_acc = mean(correct)) %>% 
     spread(key = block, value = m_acc) %>% 
     mutate(m_diff_score = posttest - pretest)
 
 ms_change_learned <- ss_acc_learned %>% 
-    group_by(training_condition, trial_type, experiment) %>% 
+    group_by(trial_type) %>% 
     summarise(m_change_score = mean(m_diff_score),
               m.cih = ci.high(m_diff_score),
               m.cil = ci.low(m_diff_score))
 
-ggplot(aes(x = training_condition, y = m_change_score, fill = training_condition), 
+ggplot(aes(x = trial_type, y = m_change_score, fill = trial_type), 
        data = ms_change_learned) +
     geom_bar(stat = "identity") +
     geom_linerange(aes(ymin = m_change_score - m.cil, ymax = m_change_score + m.cih)) +
     geom_hline(yintercept = 0) +
-    facet_grid(trial_type~experiment) +
     scale_fill_solarized() +
     ylim(-0.2, 0.2) + 
     guides(fill=F)
@@ -526,7 +511,6 @@ ggplot(aes(x = num_corr_rh_pre_fact, y = tot_diff_score, fill = training_conditi
     scale_fill_solarized() +
     facet_grid(.~training_condition)
 ```
-
 
 ### Analysis based on evidence given or selected
 
