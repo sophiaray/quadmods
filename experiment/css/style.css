@@ -21,6 +21,7 @@ body {
 	margin: 0;
 	margin-left: 0.5%;
 	padding: 1% 2% 1% 2%;
+  text-align: left;
 }
 
 input, select, button {font-family: Georgia, serif; font-size: 14px;}
@@ -63,8 +64,6 @@ button[disabled] {
 	cursor: not-allowed;
 }
 
-
-
 /**
 ## Experiment-specific styles
 This stuff will vary by experiment.
@@ -78,26 +77,16 @@ This stuff will vary by experiment.
     border: 5px dashed green;
 }
 
-.withoutHover {
-    border: 5px solid white;
-}
-
-.chosen {
-    border: 5px solid red;
-}
-
 .chosenCorrect {
     border: 5px solid blue;
 }
-
 
 .highlighted {
     border: 5px dashed green;
 }
 
-
-.notChoices {
-	border: 0px solid red;
+.chosenIncorrect {
+	border: 5px solid red;
 }
 
 
@@ -114,7 +103,7 @@ This stuff will vary by experiment.
   font-weight: bold;
 }
 
-#instructions {
+.slide {
   text-align: center;
 }
 

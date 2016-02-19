@@ -14,7 +14,7 @@ library(tidyr)
 library(ggplot2)
 library(binom)
 library(lme4)
-library(bootstrap)
+library(bootstrap) 
 library(magrittr)
 library(stringr)
 
@@ -165,6 +165,28 @@ qplot(cond, m, fill = relevant,
       ymin = m - m.cil, ymax = m + m.cih,
       position = position_dodge(width = .9),
       facets = . ~ shape, 
+      data = ms,       
+      geom = c("bar", "linerange"), stat = "identity")
+```
+
+Within subjects but aggregated across questions
+
+```{r}
+ms <- d %>% 
+  select(-resp) %>% 
+  spread(phase, correct) %>%  
+  group_by(workerid, cond, shape) %>%
+  summarise(m = mean(post - pre)) %>%
+  group_by(cond) %>%
+  summarise(m.cih = ci.high(m),
+            m.cil = ci.low(m),
+            s = var(m),
+            m = mean(m), 
+            n = n())
+
+qplot(cond, m,
+      ymin = m - m.cil, ymax = m + m.cih,
+      position = position_dodge(width = .9), 
       data = ms,       
       geom = c("bar", "linerange"), stat = "identity")
 ```
