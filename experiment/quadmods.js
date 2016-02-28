@@ -3,10 +3,10 @@ if (turk.previewMode) {
   $('#start_button').hide()
 }
 
-function shuffle (a) { 
+function shuffle (a) {
     var o = [];
     for (var i=0; i < a.length; i++) { o[i] = a[i]; }
-    for (var j, x, i = o.length; i; j = parseInt(Math.random() * i), 
+    for (var j, x, i = o.length; i; j = parseInt(Math.random() * i),
    x = o[--i], o[i] = o[j], o[j] = x);
     return o;
 }
@@ -31,7 +31,7 @@ num_examples_each_shape = 4;
 max_num_blocks = 16;
 trials_in_block = 16;
 max_trials = max_num_blocks * trials_in_block;
-num_correct_block = 0; 
+num_correct_block = 0;
 correct_blocks_counter = 0;
 
 exp = {
@@ -57,26 +57,26 @@ exp.condition =  cond_param == 'r' ? _.sample(conditions) : conditions[shape_par
 
 // now build some useful data
 pluralize_shapes = {"square":"squares", "rectangle":"rectangles", "rhombus":"rhombuses", "parallelogram":"parallelograms"};
-subset_shapes = { 
+subset_shapes = {
   "parallelogram": {
-    "square":true, 
-    "rhombus":true, 
-    "rectangle":true, 
+    "square":true,
+    "rhombus":true,
+    "rectangle":true,
     "parallelogram":true},
   "rectangle": {
-    "square":true, 
-    "rhombus":false, 
-    "rectangle":true, 
+    "square":true,
+    "rhombus":false,
+    "rectangle":true,
     "parallelogram":false},
   "rhombus": {
-    "square":true, 
-    "rhombus":true, 
-    "rectangle":false, 
+    "square":true,
+    "rhombus":true,
+    "rectangle":false,
     "parallelogram":false},
   "square": {
-    "square":true, 
-    "rhombus":false, 
-    "rectangle":false, 
+    "square":true,
+    "rhombus":false,
+    "rectangle":false,
     "parallelogram":false},
 }
 
@@ -97,7 +97,7 @@ for (shape1 of shapes) {
 // the way slides are going to work is that each slide will have a constructor that uses jquery to build it out of html and a destructor that runs after the constructor, sets the conditions for either destruction or the creation of a "next" button, and determines what goes into that button.
 // the slide array is a stack. next_slide pops off the top and executes a constructor and destructor. the order the slides should be in might seem opposite of what's expected. like [last_slide, ..., second_slide, first_slide]
 // we are going to build the stack to include a possible 256 training trials (16 trials in each block * 16 blocks)
-// we also include a block summary trial at the end of each block 
+// we also include a block summary trial at the end of each block
 
 slides= [
   { name: "survey",
@@ -124,12 +124,12 @@ slides= [
 training_trials_slides = [];training_trials_array = [];
 for (i = 0; i < max_num_blocks; i++) {
   // randomize order of shape pairs for each block
-  training_shape_pairs = shuffle(training_shape_pairs) 
+  training_shape_pairs = _.shuffle(training_shape_pairs) 
   for (pair in training_shape_pairs) {
     // build array of training trial info
     training_trial = {
       shape_pair: training_shape_pairs[pair],
-      trial_num_within_block: Number(pair) + 1, 
+      trial_num_within_block: Number(pair) + 1,
       block: i + 1
     }
     training_trials_array.push(training_trial);
@@ -203,7 +203,7 @@ function instructions_destructor_2() {
   },1000*exp.instruction_wait_time)
 }
 
-// make a slide for the relational test. 
+// make a slide for the relational test.
 // Assumes that the HTML for the #relational_${test_id} div is already on page.
 function relational_slide(test_id) {
   slide = $(`<div class='slide' id='relational_${test_id}' >`)
@@ -242,15 +242,15 @@ function relational_click() {
   test_id = $(this).parents(".slide").attr("id").split("_").pop()
   // change which one is active
   $(this).addClass('active')
-  $(this).siblings().removeClass( 'active' ) 
+  $(this).siblings().removeClass( 'active' )
   $(this).blur();
   // grab data from elements using jquery-fu
   question_divs = $(this).parent().parent().siblings().addBack().children("div")
   exp["r_questions_" +test_id] = _.map(question_divs, function(q){ return $(q).attr("id")})
-  exp["r_answers_" +test_id] = _.map(question_divs, function(q){ 
+  exp["r_answers_" +test_id] = _.map(question_divs, function(q){
     return $(q).children(".active").text() })
   // make sure ss have answered all questions, then advance
-  if (_.every(exp["r_answers_" +test_id]) && $('#r_button_' +test_id).length == 0) {    
+  if (_.every(exp["r_answers_" +test_id]) && $('#r_button_' +test_id).length == 0) {
     $(this).parents(".block-text").append(
       $("<p>").append(
         $(`<button id='r_button_${test_id}'>`).text("Next").click(function(){
@@ -262,12 +262,12 @@ function relational_click() {
 
 function score_relational_test(r_questions_array, r_answers_array) {
   counter = 0;
-  for ( q in exp.r_questions_pretest ) { 
+  for ( q in exp.r_questions_pretest ) {
     counter += 1;
     // get values we need to score trial
     q_shape = r_questions_array[q].split("_")[3];
     q_question = r_questions_array[q].split("_")[2];
-    ss_response = r_answers_array[q]; 
+    ss_response = r_answers_array[q];
     ss_response_bool = r_answers_array[q] == "Yes";
     correct_response = subset_shapes[q_question][q_shape];
     // score trial
@@ -417,7 +417,7 @@ function training_constructor() {
 	training_start_time = new Date();
   slide = $("<div class='slide' id='training' >");
   // build string to display image
-  trial = training_trials_array.shift(); 
+  trial = training_trials_array.shift();
   question = trial.shape_pair[0];
   shape = trial.shape_pair[1];
   img_index = String(getRandomIntInclusive(1,3));
@@ -427,8 +427,8 @@ function training_constructor() {
   slide.append(img_html);
   // display question
   slide.append($("<p class='training_text'>").html(`Is this a ${question}?`));
-  // display y/n buttons  
-  // here we use .one to only allow one response on each slide/trial  
+  // display y/n buttons
+  // here we use .one to only allow one response on each slide/trial
   // we then pass the event to the feedback function for scoring
   slide.append($(`<div class='btn-group' id="${img}">`),
           $(`<button class="btn btn-default">`)
@@ -446,12 +446,12 @@ function training_feedback(click_event) {
   training_end_time = new Date();
   // change which one is active
   click_event.addClass('active')
-  click_event.siblings().removeClass( 'active' ) 
+  click_event.siblings().removeClass( 'active' )
   click_event.blur();
   // check response against key
-  ss_response = click_event.text(); 
+  ss_response = click_event.text();
   ss_response_bool = click_event.text() == "Yes";
-  correct_response = subset_shapes[question][shape]; 
+  correct_response = subset_shapes[question][shape];
   trial_correct = ss_response_bool == correct_response;
   // give feedback
   if ( trial_correct == true ) {
@@ -517,7 +517,7 @@ function end_exp() {
     text = $("<div class='block-text' id='finished_text'>"); slide.append(text)
     text.append($("<p>").html("You're finished - thanks for participating! Submitting to Mechanical Turk..."))
     $("body").append(slide)
-    $(".slide").hide(); slide.show() 
+    $(".slide").hide(); slide.show()
     // store survey data
     exp.about = $('#about').val();
     exp.comment = $('#comments').val();
@@ -527,7 +527,7 @@ function end_exp() {
     // submit to turk
     setTimeout(function () {
       turk.submit(exp);
-    }, 500); 
+    }, 500);
   } else {
     text.append($("<p style='color:red'>").html('Please answer the first question before submtting.'))
   }
