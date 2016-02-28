@@ -124,7 +124,7 @@ slides= [
 training_trials_slides = [];training_trials_array = [];
 for (i = 0; i < max_num_blocks; i++) {
   // randomize order of shape pairs for each block
-  training_shape_pairs = _.shuffle(training_shape_pairs) 
+  training_shape_pairs = _.shuffle(training_shape_pairs)
   for (pair in training_shape_pairs) {
     // build array of training trial info
     training_trial = {
@@ -255,7 +255,8 @@ function relational_click() {
       $("<p>").append(
         $(`<button id='r_button_${test_id}'>`).text("Next").click(function(){
           score_relational_test(exp["r_questions_" +test_id], exp["r_answers_" +test_id])
-          show_next_slide(training_trials_slides) // switch to training trials stack
+          if (test_id == "pretest"){show_next_slide(training_trials_slides)} // switch to training trials stack
+          if (test_id == "posttest"){show_next_slide(slides)} // switch to training trials stack
         })))
   }
 }
@@ -312,6 +313,7 @@ function block_summary_destructor() {
           // check if ss got two blocks in a row, or if the training trials array is empty
           // if yes, proceed to relational posttest, otherwise, continue training
            if ( correct_blocks_counter == 2 || typeof training_trials_array[0] == 'undefined') {
+              exp.training_complete = true
               show_next_slide(slides);
            } else {
               show_next_slide(training_trials_slides);
@@ -414,6 +416,7 @@ function getRandomIntInclusive(min, max) {
 }
 
 function training_constructor() {
+  exp.training_complete = false
 	training_start_time = new Date();
   slide = $("<div class='slide' id='training' >");
   // build string to display image
@@ -430,11 +433,16 @@ function training_constructor() {
   // display y/n buttons
   // here we use .one to only allow one response on each slide/trial
   // we then pass the event to the feedback function for scoring
+  window.onkeypress = function(event) {
+    if (exp.training_complete) { return }
+    if (event.which == 121) {training_feedback($("button.yes"))}
+    if (event.which == 110) {training_feedback($("button.no"))}
+  }
   slide.append($(`<div class='btn-group' id="${img}">`),
-          $(`<button class="btn btn-default">`)
+          $(`<button class="btn btn-default yes">`)
             .text('Yes')
             .one("click", function(){ training_feedback($(this)) }),
-          $(`<button class="btn btn-default">`)
+          $(`<button class="btn btn-default no">`)
             .text('No')
             .one("click", function(){ training_feedback($(this)) }))
 
@@ -525,6 +533,7 @@ function end_exp() {
     exp.gender = $('#gender').val();
     exp.exp_total_time = exp_end_time - exp_start_time;
     // submit to turk
+    console.log(exp)
     setTimeout(function () {
       turk.submit(exp);
     }, 500);
