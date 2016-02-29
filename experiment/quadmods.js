@@ -173,7 +173,7 @@ function instructions_destructor() {
   setTimeout(function(){
     $("#instructions-text").append(
       $("<p>").append(
-        $("<button>").text("Next").click(function(){
+        $("<button id='start_button'>").text("Next").click(function(){
           exp_start_time = new Date(); // log start time of experiment
           show_next_slide(slides) // should be slides
         })))
@@ -265,8 +265,8 @@ function score_relational_test(r_questions_array, r_answers_array) {
   for ( q in exp.r_questions_pretest ) { 
     counter += 1;
     // get values we need to score trial
-    q_shape = r_questions_array[q].split("_")[3];
-    q_question = r_questions_array[q].split("_")[2];
+    q_question = r_questions_array[q].split("_")[3];
+    q_shape = r_questions_array[q].split("_")[2];
     ss_response = r_answers_array[q]; 
     ss_response_bool = r_answers_array[q] == "Yes";
     correct_response = subset_shapes[q_question][q_shape];
