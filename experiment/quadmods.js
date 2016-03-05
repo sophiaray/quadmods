@@ -3,14 +3,6 @@ if (turk.previewMode) {
   $('#start_button').hide()
 }
 
-function shuffle (a) {
-    var o = [];
-    for (var i=0; i < a.length; i++) { o[i] = a[i]; }
-    for (var j, x, i = o.length; i; j = parseInt(Math.random() * i),
-   x = o[--i], o[i] = o[j], o[j] = x);
-    return o;
-}
-
 function score_entity() {
   scores = {}
   for (q_shape of shapes) {
@@ -38,7 +30,7 @@ exp = {
   data: [],
   num_examples_to_show: 3,
   num_examples_clicked: 0,
-  instruction_wait_time: 0, // this should be 3 seconds
+  instruction_wait_time: 3, // this should be 3 seconds
   feedback_wait_time: 500
 }
 
@@ -159,7 +151,7 @@ function instructions_constructor() {
   slide = $("<div class='slide' id='instructions-slide' >")
   text = $("<div class='block-text' id='instructions-text'>"); slide.append(text)
   text.append($("<p>").html("In this experiment, we're interested in your judgments about the membership of shapes into geometric classes. First you will answer some questions, then you will be shown a series of examples, and then you will be asked to answer additional questions. It should take about 10 minutes."))
-  text.append($("<p>").html("(Note: you won't be able to preview this HIT before accepting it because it's so short.)"))
+  text.append($("<p>").html("(Note: you won't be able to preview this HIT before accepting it.)"))
   text.append($("<p>").html("By answering the following questions, you are participating in a study being performed by cognitive scientists in the Stanford Department of Psychology. If you have questions about this research, please contact us at langcoglab@stanford.edu. You must be at least 18 years old to participate. Your participation in this research is voluntary. You may decline to answer any or all of the following questions. You may decline further participation, at any time, without adverse consequences. Your anonymity is assured; the researchers who have requested your participation will not receive any personal information about you."))
   text.append($("<p>").html("We have recently been made aware that your public Amazon.com profile can be accessed via your worker ID if you do not choose to opt out. If you would like to opt out of this feature, you may follow instructions available <a href ='http://www.amazon.com/gp/help/customer/display.html?nodeId=16465241'> here.  </a>"))
   text.append($("<p>").html("The button to proceed is delayed for 3 seconds to ensure that you have read these instructions."))
@@ -185,6 +177,7 @@ function instructions_constructor_2() {
   text = $("<div class='block-text' id='instructions2-text'>"); slide.append(text)
   // slide.append($("<img src='images/stanford.png' alt='Stanford University'>"))
   text.append($("<p>").html("Now you will see a series of squares, rhombuses, rectangles, and parallelograms. You will be asked to identify each example and given feedback to help you learn."))
+  text.append($("<p>").html("<b>To respond to each question, you can either click the 'Yes' or 'No' buttons, or you can press the 'Y' or 'N' keys.</b>"))
   text.append($("<p>").html("You will advance to the final test questions once you correctly identify all the examples for two straight blocks, or you complete 16 total training blocks."))
   text.append($("<p>").html("You will see a summary of your performance after each block to see your progress."))
   $("body").append(slide)
@@ -198,7 +191,7 @@ function instructions_destructor_2() {
     $("#instructions2-text").append(
       $("<p>").append(
         $("<button>").text("Next").click(function(){
-          show_next_slide(slides)
+          show_next_slide(training_trials_slides)
         })))
   },1000*exp.instruction_wait_time)
 }
@@ -255,7 +248,7 @@ function relational_click() {
       $("<p>").append(
         $(`<button id='r_button_${test_id}'>`).text("Next").click(function(){
           score_relational_test(exp["r_questions_" +test_id], exp["r_answers_" +test_id])
-          if (test_id == "pretest"){show_next_slide(training_trials_slides)} // switch to training trials stack
+          if (test_id == "pretest"){show_next_slide(slides)} // switch to training trials stack
           if (test_id == "posttest"){show_next_slide(slides)} // switch to training trials stack
         })))
   }
@@ -291,9 +284,14 @@ function score_relational_test(r_questions_array, r_answers_array) {
 function block_summary_constructor() {
   slide = $("<div class='slide' id='block-summary-slide' >")
   text = $("<div class='block-text' id='block-summary-text'>"); slide.append(text)
-  text.append($("<p>").html(`You just finished training block ${trial.block}.`))
-  text.append($("<p>").html(`You got ${num_correct_block} out of 16 questions correct.`))
-  text.append($("<p>").html("Remember, you will proceed to the final test questions once you correctly identify all the examples for two straight blocks, or you complete 16 total training blocks."))
+  text.append($("<p>").html(`You just finished training block ${trial.block}. And you got ${num_correct_block} out of 16 questions correct.`))
+  if ( correct_blocks_counter == 1 && num_correct_block == 16 ) {
+    text.append($("<p>").html(`Since you answered all training questions correctly for 2 blocks in a row, you will now advance to the final test questions!`))
+  } else {
+    text.append($("<p>").html(`You currently are on a ${correct_blocks_counter+1} block streak!`))
+    text.append($("<p>").html("Remember, you will proceed to the final test questions once you correctly identify all the examples for 2 blocks in a row, or you complete 16 total training blocks."))
+  }
+  
   $("body").append(slide)
   $(".slide").hide(); slide.show()
   block_summary_destructor();
@@ -303,6 +301,8 @@ function block_summary_destructor() {
   // update block counter
   if ( num_correct_block == 16 ) {
     correct_blocks_counter++;
+  } else {
+    correct_blocks_counter = 0; // reset block counter if ss doesn't answer all questions correctly
   }
   setTimeout(function(){
     $("#block-summary-text").append(
@@ -319,7 +319,7 @@ function block_summary_destructor() {
               show_next_slide(training_trials_slides);
            }
         })))
-  },1000*exp.instruction_wait_time)
+  },1000)
 }
 
 /*function entity_slide(test_id) {
@@ -433,11 +433,11 @@ function training_constructor() {
   // display y/n buttons
   // here we use .one to only allow one response on each slide/trial
   // we then pass the event to the feedback function for scoring
-  window.onkeypress = function(event) {
+  $(window).on("keypress", function (event) {
     if (exp.training_complete) { return }
     if (event.which == 121) {training_feedback($("button.yes"))}
     if (event.which == 110) {training_feedback($("button.no"))}
-  }
+  })
   slide.append($(`<div class='btn-group' id="${img}">`),
           $(`<button class="btn btn-default yes">`)
             .text('Yes')
@@ -445,12 +445,15 @@ function training_constructor() {
           $(`<button class="btn btn-default no">`)
             .text('No')
             .one("click", function(){ training_feedback($(this)) }))
-
   $("body").append(slide)
   $(".slide").hide(); slide.show()
 }
 
 function training_feedback(click_event) {
+  // disable event handlers
+  $(':button').off("click");
+  $(window).off("keypress");
+
   training_end_time = new Date();
   // change which one is active
   click_event.addClass('active')
@@ -473,9 +476,7 @@ function training_feedback(click_event) {
 
 function score_training() {
   // store num correct on block
-  if ( trial_correct == true ) {
-    num_correct_block++
-  }
+  if ( trial_correct == true ) {num_correct_block++};
   // get trial training time
   trial_training_time = training_end_time - training_start_time;
   // log training data (trial level data storage)
@@ -533,7 +534,6 @@ function end_exp() {
     exp.gender = $('#gender').val();
     exp.exp_total_time = exp_end_time - exp_start_time;
     // submit to turk
-    console.log(exp)
     setTimeout(function () {
       turk.submit(exp);
     }, 500);
