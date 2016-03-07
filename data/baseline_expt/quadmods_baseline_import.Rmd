@@ -1,0 +1,134 @@
+---
+title: "Quadmods Import Script"
+author: "Kyle MacDonald"
+date: "January 16, 2016"
+output: html_document
+---
+
+This script imports and formats data for baseline passive learning experiment
+about quadrilaterals. 
+
+# Libraries
+
+```{r, message=FALSE}
+rm(list=ls())
+library(jsonlite)
+library(magrittr)
+library(plyr)
+library(dplyr)
+library(lubridate)
+library(tidyr)
+```
+
+Set working directory to where you stored raw JSON files.
+
+```{r}
+setwd("../../raw-data/quadmods_baseline_full/production-results//")
+```
+
+# Read in all the JSON strings
+
+```{r comment=NA}
+read.file <- function(filename) {
+  con <- file(filename, "r", blocking = TRUE)
+  lines <- paste(readLines(con, warn = FALSE), collapse = "\n")
+  close(con)
+  lines
+}
+
+json.filenames <- list.files()
+json.strings <- Map(read.file, json.filenames)
+```
+
+# Convert JSON to a R data frame
+
+Merge all the json strings together, as if they are in a big array, and convert it to an R data frame:
+
+```{r comment=NA}
+json.superstring <- paste("[",paste(json.strings, collapse = ","),"]")
+assignments <- fromJSON( json.superstring )
+```
+
+Only keep unique worker IDs.
+
+```{r comment=NA}
+assignments <- distinct(assignments, WorkerId)
+```
+
+## Build experiment information data frame.
+
+```{r comment=NA}
+exp_df <- data.frame(
+    workerid = assignments$WorkerId, 
+    age = assignments$answers$age,
+    gender = assignments$answers$gender,
+    comments = assignments$answers$comment,
+    exp_about = assignments$answers$about,
+    exp_unclear = assignments$answers$unclear,
+    exp_strategy = assignments$answers$strategy,
+    exp_external_aid = assignments$answers$external_aid,
+    exp_improve = assignments$answers$better,
+    approval_time = assignments$AutoApprovalTime,
+    exp_time = assignments$answers$exp_total_time,
+    stringsAsFactors = F
+)
+```
+
+## Build trial level data frame
+
+```{r}
+trial_data <- Map(function(id, subject.trial.data) 
+    { cbind(workerid = id, subject.trial.data) },
+                  assignments$WorkerId,
+                  assignments$answers$data)
+
+```
+
+```{r}
+strip.rownames <- function(x) {
+  rownames(x) <- NULL
+  x
+}
+
+trial_data <- strip.rownames(do.call(rbind, trial_data))
+```
+
+## Merge
+
+```{r}
+df_final <- left_join(exp_df, trial_data, by = "workerid")
+```
+
+## Fix timestamps
+
+```{r}
+# This drops the weirdo T and Z from the turk timestamps and then parses them into seconds time 0 (some UTC standard)
+df_final$approval_time <- parse_date_time(
+    gsub("[[:alpha:]]"," ", 
+         df_final$approval_time),
+    "Ymd hms"
+)
+```
+
+## Anonymize
+
+```{r}
+anonymized_df <- df_final %>% 
+    select(workerid) %>% 
+    distinct() %>% 
+    mutate(subids = 1:nrow(.))
+
+df_final_clean <- left_join(df_final, anonymized_df, by = "workerid") %>% 
+    select(-workerid)
+
+# move subid to the first col and add a variable to track both question and shape
+df_final_clean <- select(df_final_clean, subids, everything()) %>% 
+    mutate(question_and_shape = paste(question, shape, sep = '_'))
+```
+
+## Save tidy data 
+
+```{r}
+write.csv(x = df_final_clean, file = "../../../data/baseline_expt/quadmods-baseline.csv",
+          row.names=F)
+```

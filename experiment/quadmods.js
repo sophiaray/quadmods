@@ -1,8 +1,3 @@
-// Hide next button if turk in preview mode
-if (turk.previewMode) {
-  $('#start_button').hide()
-}
-
 function score_entity() {
   scores = {}
   for (q_shape of shapes) {
@@ -20,7 +15,7 @@ function score_entity() {
 conditions = ["baseline", "active", "responsive"]
 shapes = ["square", "rectangle", "rhombus", "parallelogram"];
 num_examples_each_shape = 4;
-max_num_blocks = 16;
+max_num_blocks = 15;
 trials_in_block = 16;
 max_trials = max_num_blocks * trials_in_block;
 num_correct_block = 0;
@@ -88,7 +83,7 @@ for (shape1 of shapes) {
 // SLIDES
 // the way slides are going to work is that each slide will have a constructor that uses jquery to build it out of html and a destructor that runs after the constructor, sets the conditions for either destruction or the creation of a "next" button, and determines what goes into that button.
 // the slide array is a stack. next_slide pops off the top and executes a constructor and destructor. the order the slides should be in might seem opposite of what's expected. like [last_slide, ..., second_slide, first_slide]
-// we are going to build the stack to include a possible 256 training trials (16 trials in each block * 16 blocks)
+// we are going to build the stack to include a possible 256 training trials (16 trials in each block * 15 blocks)
 // we also include a block summary trial at the end of each block
 
 slides= [
@@ -162,14 +157,17 @@ function instructions_constructor() {
 
 function instructions_destructor() {
   // wait x*1,000 milliseconds before showing next button
-  setTimeout(function(){
-    $("#instructions-text").append(
-      $("<p>").append(
-        $("<button id='start_button'>").text("Next").click(function(){
-          exp_start_time = new Date(); // log start time of experiment
-          show_next_slide(slides) // should be slides
-        })))
-  },1000*exp.instruction_wait_time)
+  if (turk.previewMode == false) {
+    setTimeout(function(){
+      $("#instructions-text").append(
+        $("<p>").append(
+          $("<button id='start_button'>").text("Next").click(function(){
+            exp_start_time = new Date(); // log start time of experiment
+            show_next_slide(slides) // should be slides
+          })))
+     },1000*exp.instruction_wait_time)
+
+  }
 }
 
 function instructions_constructor_2() {
@@ -177,9 +175,10 @@ function instructions_constructor_2() {
   text = $("<div class='block-text' id='instructions2-text'>"); slide.append(text)
   // slide.append($("<img src='images/stanford.png' alt='Stanford University'>"))
   text.append($("<p>").html("Now you will see a series of squares, rhombuses, rectangles, and parallelograms. You will be asked to identify each example and given feedback to help you learn."))
-  text.append($("<p>").html("<b>To respond to each question, you can either click the 'Yes' or 'No' buttons, or you can press the 'Y' or 'N' keys.</b>"))
-  text.append($("<p>").html("You will advance to the final test questions once you correctly identify all the examples for two straight blocks, or you complete 16 total training blocks."))
+  text.append($("<p>").html("<b>To respond to each question, you can either click the 'Yes' or 'No' buttons, or you can press the 'Z' or 'M' keys.</b>"))
+  text.append($("<p>").html("You will advance to the final test questions once you correctly identify all the examples for 2 blocks in a row or you complete 15 total training blocks."))
   text.append($("<p>").html("You will see a summary of your performance after each block to see your progress."))
+  text.append($("<p>").html("Note: We are interested in how people learn from examples. So please do not use any external aids (e.g., pen and paper or google). Thanks!"))
   $("body").append(slide)
   $(".slide").hide(); slide.show()
   instructions_destructor_2();
@@ -263,7 +262,7 @@ function score_relational_test(r_questions_array, r_answers_array) {
     q_question = r_questions_array[q].split("_")[2];
     ss_response = r_answers_array[q];
     ss_response_bool = r_answers_array[q] == "Yes";
-    correct_response = subset_shapes[q_question][q_shape];
+    correct_response = subset_shapes[q_shape][q_question];
     // score trial
     trial_correct = ss_response_bool == correct_response;
     // log data
@@ -282,14 +281,20 @@ function score_relational_test(r_questions_array, r_answers_array) {
 }
 
 function block_summary_constructor() {
+  // update block counter
+  if ( num_correct_block == 16 ) {
+    correct_blocks_counter++;
+  } else {
+    correct_blocks_counter = 0; // reset block counter if ss doesn't answer all questions correctly
+  }
   slide = $("<div class='slide' id='block-summary-slide' >")
   text = $("<div class='block-text' id='block-summary-text'>"); slide.append(text)
   text.append($("<p>").html(`You just finished training block ${trial.block}. And you got ${num_correct_block} out of 16 questions correct.`))
-  if ( correct_blocks_counter == 1 && num_correct_block == 16 ) {
+  if ( correct_blocks_counter == 2 ) {
     text.append($("<p>").html(`Since you answered all training questions correctly for 2 blocks in a row, you will now advance to the final test questions!`))
   } else {
-    text.append($("<p>").html(`You currently are on a ${correct_blocks_counter+1} block streak!`))
-    text.append($("<p>").html("Remember, you will proceed to the final test questions once you correctly identify all the examples for 2 blocks in a row, or you complete 16 total training blocks."))
+    text.append($("<p>").html(`You currently have ${correct_blocks_counter} blocks in a row correct.`))
+    text.append($("<p>").html("Remember, you will proceed to the final test questions once you correctly identify all the examples for 2 blocks in a row, or you complete 15 total training blocks."))
   }
   
   $("body").append(slide)
@@ -298,12 +303,6 @@ function block_summary_constructor() {
 }
 
 function block_summary_destructor() {
-  // update block counter
-  if ( num_correct_block == 16 ) {
-    correct_blocks_counter++;
-  } else {
-    correct_blocks_counter = 0; // reset block counter if ss doesn't answer all questions correctly
-  }
   setTimeout(function(){
     $("#block-summary-text").append(
       $("<p>").append(
@@ -435,22 +434,22 @@ function training_constructor() {
   // we then pass the event to the feedback function for scoring
   $(window).on("keypress", function (event) {
     if (exp.training_complete) { return }
-    if (event.which == 121) {training_feedback($("button.yes"))}
-    if (event.which == 110) {training_feedback($("button.no"))}
+    if (event.which == 122) {training_feedback($("button.yes"))}
+    if (event.which == 109) {training_feedback($("button.no"))}
   })
   slide.append($(`<div class='btn-group' id="${img}">`),
-          $(`<button class="btn btn-default yes">`)
-            .text('Yes')
+          $(`<button class="btn btn-default yes" value='Yes'>`)
+            .text('Yes (z)')
             .one("click", function(){ training_feedback($(this)) }),
-          $(`<button class="btn btn-default no">`)
-            .text('No')
+          $(`<button class="btn btn-default no" value='No'>`)
+            .text('No (m)')
             .one("click", function(){ training_feedback($(this)) }))
   $("body").append(slide)
   $(".slide").hide(); slide.show()
 }
 
 function training_feedback(click_event) {
-  // disable event handlers
+  // disable event handlers, so user can only submit one response per trial
   $(':button').off("click");
   $(window).off("keypress");
 
@@ -460,8 +459,8 @@ function training_feedback(click_event) {
   click_event.siblings().removeClass( 'active' )
   click_event.blur();
   // check response against key
-  ss_response = click_event.text();
-  ss_response_bool = click_event.text() == "Yes";
+  ss_response = click_event.val();
+  ss_response_bool = click_event.val() == "Yes";
   correct_response = subset_shapes[question][shape];
   trial_correct = ss_response_bool == correct_response;
   // give feedback
@@ -502,8 +501,12 @@ function survey_constructor() {
   slide = $("<div class='slide' id='final_survey' >")
 
   text = $("<div class='block-text' id='survey-text'>"); slide.append(text)
-  text.append($("<p>").html("Thank you for taking our HIT. Please answer the first question. The remaining questions are optional."))
+  text.append($("<p>").html("Thank you for taking our HIT. Please answer the following questions."))
   text.append($("<p>").html('What was this survey about? <br> <input type="text" id="about" name="about" size="70">'))
+  text.append($("<p>").html('How can we make this experiment better? <br> <input type="text" id="better" name="better" size="70">'))
+  text.append($("<p>").html('Was anything unclear? <br> <input type="text" id="unclear" name="unclear" size="70">'))
+  text.append($("<p>").html('Did you use any external learning aids (e.g. pencil and paper)? <br> <input type="text" id="external_aid" name="external_aid" size="70">'))
+  text.append($("<p>").html('Did you use any particular strategy to learn the shapes? <br> <input type="text" id="strategy" name="strategy" size="70">'))
   text.append($("<p>").html('Any other comments for us? <br> <input type="text" id="comments" name="comments" size="70">'))
   text.append($("<p>").html('What is your age? <br> <input type="text" id="age" name="age" size="20">'))
   text.append($("<p>").html('What is your gender? (m = male, f = female, o = other) <br> <input type="text" id="gender" name="gender" size="20">'))
@@ -529,7 +532,11 @@ function end_exp() {
     $(".slide").hide(); slide.show()
     // store survey data
     exp.about = $('#about').val();
+    exp.better = $('#better').val();
+    exp.unclear = $('#unclear').val();
     exp.comment = $('#comments').val();
+    exp.external_aid = $('#external_aid').val();
+    exp.strategy = $('#strategy').val();
     exp.age = $('#age').val();
     exp.gender = $('#gender').val();
     exp.exp_total_time = exp_end_time - exp_start_time;
