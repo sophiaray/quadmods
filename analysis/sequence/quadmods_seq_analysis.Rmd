@@ -34,7 +34,7 @@ ci.high <- function(x,na.rm=T) {
 Load data.
 
 ```{r data_clean}
-d1 <- read.csv("../data/quadmods-sequences-exp1_2.csv", header=TRUE, 
+d1 <- read.csv("../../data/sequence_pilots/quadmods-sequences-exp1_2.csv", header=TRUE, 
                row.names=NULL, stringsAsFactors = FALSE)
 
 d1$block <- factor(d1$block, levels = c("pretest", "posttest"))
@@ -141,9 +141,11 @@ ggplot(aes(x = question_and_shape, y = m, fill = block), data = ms) +
     geom_linerange(aes( ymin = m - m.cil, ymax = m + m.cih),  position = position_dodge(width = 0.9)) +
     geom_hline(yintercept = .5, lty = 2) +
     ylim(0, 1) + 
+    xlab("Question") +
     scale_fill_solarized() +
     theme(axis.text.x = element_text(angle = 30, hjust = 1)) +
-    ggtitle("Accuracy on each question: Relational Test")
+    ggtitle("Accuracy on each question: Relational Test") +
+    theme(text = element_text(size = 20))
 ```
 
 ### Entity tests broken down by question and block
@@ -183,7 +185,8 @@ ggplot(aes(x = block, y = m_acc), data = ms) +
     geom_hline(aes(yintercept = chance_line), linetype = "dashed") +
     ylim(0.4,1.0) +
     facet_grid(.~trial_type) +
-    scale_color_solarized() 
+    scale_color_solarized() +
+    theme(text = element_text(size = 20))
 ```
 
 ### Within subjects change scores for all shapes
@@ -208,8 +211,11 @@ ggplot(aes(x = trial_type, y = m_change_score, fill = trial_type),
     geom_linerange(aes(ymin = m_change_score - m.cil, ymax = m_change_score + m.cih)) +
     geom_hline(yintercept = 0) +
     scale_fill_solarized() +
+    ylab("Mean Difference Score") +
+    xlab("Test Type") +
     ylim(-0.1, 0.1) + 
-    guides(fill=F)
+    guides(fill=F) +
+    theme(text = element_text(size = 20))
 ```
 
 ## Accuracy on the learned shape
@@ -233,9 +239,11 @@ ggplot(aes(x = question_and_shape, y = m, fill = block), data = ms) +
     geom_linerange(aes( ymin = m - m.cil, ymax = m + m.cih),  position = position_dodge(width = 0.9)) +
     geom_hline(yintercept = .5, lty = 2) +
     ylim(0, 1) + 
+    xlab("Question") +
     scale_fill_solarized() +
     theme(axis.text.x = element_text(angle = 30, hjust = 1)) +
-    ggtitle("Rhombus: Relational Test")
+    ggtitle("Rhombus: Relational Test") +
+    theme(text = element_text(size = 20))
 ```
 
 ### Entity tests for learned shape
@@ -254,7 +262,8 @@ ggplot(aes(x = question_and_shape, y = m, fill = block), data = ms) +
     ylim(0, 1) + 
     scale_fill_solarized() +
     theme(axis.text.x = element_text(angle = 30, hjust = 1)) +
-    ggtitle("Rhombus: Entity Test")
+    ggtitle("Rhombus: Entity Test") +
+    theme(text = element_text(size = 20))
 ```
 
 ### Overall accuracy change on Rhombus
@@ -276,7 +285,8 @@ ggplot(aes(x = block, y = m_acc), data = ms_shape) +
     geom_hline(aes(yintercept = chance_line), linetype = "dashed") +
     ylim(0.4,1.0) +
     facet_grid(.~trial_type) +
-    scale_color_solarized()
+    scale_color_solarized() +
+    
 ```
 
 ### Within subjects change scores for Rhombus

@@ -78,7 +78,7 @@ ss <- d1 %>%
 
 ggplot(aes(x=exp_time_min, fill = reached_crit), data = ss) +
     geom_density(alpha = 0.5) +
-    scale_fill_solarized()
+    scale_fill_solarized() 
 ```
 
 ### How many blocks did it take to reach criterion? 
@@ -90,15 +90,18 @@ ss <- d1 %>%
     summarise(block_reached_crit = max(as.numeric(block)))
 
 ggplot(data = ss, aes(x = block_reached_crit)) + 
-    geom_histogram()
+    geom_histogram() +
+    xlab("Block Reached Criterion") +
+    theme(text = element_text(size = 20))
 ```
 
 ### Comments
 
 ```{r}
-comments <- d1 %>% 
+d1 %>% 
     distinct(subids) %>% 
-    select(subids:exp_improve) 
+    select(subids:exp_improve) %>% 
+    knitr::kable()
 ```
 
 Visualization
@@ -118,7 +121,9 @@ ggplot(data = ms, aes(x = as.numeric(block), y = mean, color = reached_crit)) +
     geom_line() +
     geom_hline(aes(yintercept = 0.5), linetype = "dashed") +
     ylim(0.2, 1) +
-    scale_color_solarized()
+    scale_color_solarized() +
+    xlab("Block") +
+    theme(text = element_text(size = 20))
 ```
 
 ### Average blocks to criterion
@@ -140,8 +145,9 @@ d1 %>%
 ```{r, fig.width=9, fig.height=6}
 ms <- d1 %>% 
     filter(trial_type %in% c("relational")) %>%
-    group_by(question_and_shape, question, block = as.factor(block)) %>%
+    group_by(question_and_shape, question, block = as.factor(block), reached_crit) %>%
     multi_boot_standard(column = "correct") %>% 
+    ungroup() %>% 
     mutate(block = relevel(block, "pretest")) 
 
 ggplot(aes(x = question_and_shape, y = mean, fill = block), data = ms) + 
@@ -150,9 +156,13 @@ ggplot(aes(x = question_and_shape, y = mean, fill = block), data = ms) +
                    position = position_dodge(width = 0.5)) +
     geom_hline(yintercept = .5, lty = 2) +
     ylim(0, 1) + 
+    xlab("Question") +
     scale_fill_solarized() +
-    theme(axis.text.x = element_text(angle = 30, hjust = 1)) +
-    ggtitle("Are all _____ also ______?")
+    facet_grid(reached_crit~.) +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 30, hjust = 1),
+          text = element_text(size = 20)) +
+    ggtitle("Are all _____ also ______?") 
 ```
 
 ### Overall accuracy analysis for relational test across blocks
@@ -218,7 +228,8 @@ ggplot(aes(x = block, y = mean), data = ms) +
     ylim(0,1.0) +
     facet_grid(.~reached_crit) +
     scale_color_solarized() +
-    theme_bw()
+    theme_bw() +
+    theme(text = element_text(size = 20))
 ```
 
 ### Within subjects change scores
