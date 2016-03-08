@@ -29,7 +29,20 @@ Load data.
 d1 <- read.csv("../../data/baseline_expt/quadmods-baseline.csv", header=TRUE, 
                row.names=NULL, stringsAsFactors = FALSE)
 
-d1 <- d1 %>% distinct()
+d1 <- d1 %>% 
+    distinct() %>% 
+    mutate(block_num = as.numeric(block))
+```
+
+Get the block each ss reached criterion
+
+```{r}
+d1 %<>% 
+    filter(trial_type == "training") %>% 
+    group_by(subids) %>% 
+    summarise(block_reached_crit = max(block_num)) %>% 
+    left_join(., d1) %>% 
+    mutate(reached_crit = ifelse(block_reached_crit < 15, "yes", "no"))
 ```
 
 Descriptives
@@ -39,42 +52,88 @@ Descriptives
 
 ```{r}
 d1 %>% 
-    select(subids) %>% 
+    select(subids, reached_crit) %>% 
     unique() %>% 
-    summarise(n_subs = n()) 
+    group_by(reached_crit) %>% 
+    summarise(n_subs = n()) %>% 
+    knitr::kable()
 ```
 
 ### How long did experiment take?
 
 ```{r}
 d1 %>% 
-    filter(trial_type == "training") %>% 
+    filter(trial_type == "training") %>%
+    group_by(reached_crit) %>% 
     summarise(m_train_time_sec = (mean(trial_time) / 1000),
               m_exp_time_min = (mean(exp_time) / 1000) / 60) %>% 
     knitr::kable()
 
 ss <- d1 %>% 
     filter(trial_type == "training") %>% 
-    group_by(subids) %>% 
+    group_by(subids, reached_crit) %>% 
     summarise(train_time_sec = (mean(trial_time) / 1000),
               exp_time_min = (mean(exp_time) / 1000) / 60,
               max_training_block = max(as.numeric(block)))
 
-ggplot(aes(x=exp_time_min), data = ss) +
-    geom_histogram(binwidth = 0.3) 
+ggplot(aes(x=exp_time_min, fill = reached_crit), data = ss) +
+    geom_density(alpha = 0.5) +
+    scale_fill_solarized()
+```
+
+### How many blocks did it take to reach criterion? 
+
+```{r}
+ss <- d1 %>% 
+    filter(trial_type == "training") %>% 
+    group_by(subids) %>% 
+    summarise(block_reached_crit = max(as.numeric(block)))
+
+ggplot(data = ss, aes(x = block_reached_crit)) + 
+    geom_histogram()
 ```
 
 ### Comments
 
 ```{r}
-d1 %>% 
+comments <- d1 %>% 
     distinct(subids) %>% 
-    select(subids:exp_improve) %>% 
-    knitr::kable()
+    select(subids:exp_improve) 
 ```
 
 Visualization
 --------
+
+### Training performance across blocks split by ss who reached training criterion
+
+```{r}
+ms <- d1 %>% 
+    filter(trial_type == "training") %>% 
+    group_by(block, reached_crit) %>% 
+    multi_boot_standard(column = "correct") %>% 
+    mutate(prob_error = 1 - mean)
+
+ggplot(data = ms, aes(x = as.numeric(block), y = mean, color = reached_crit)) + 
+    geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper)) +
+    geom_line() +
+    geom_hline(aes(yintercept = 0.5), linetype = "dashed") +
+    ylim(0.2, 1) +
+    scale_color_solarized()
+```
+
+### Average blocks to criterion
+
+```{r}
+d1 %>% 
+    filter(trial_type == "training") %>% 
+    mutate(condition = "baseline") %>% 
+    group_by(subids, condition) %>% 
+    summarise(block_reached_crit = max(as.numeric(block))) %>% 
+    filter(block_reached_crit != 15) %>% # remove ss who didn't reach criterion
+    group_by(condition) %>% 
+    multi_boot_standard(column = "block_reached_crit") %>% 
+    knitr::kable()
+```
 
 ### Relational test broken down by question and block
 
@@ -120,7 +179,7 @@ ggplot(aes(x = block, y = mean), data = ms) +
 ```{r}
 ss_acc <- d1 %>% 
     filter(trial_type %in% c("relational")) %>% 
-    group_by(subids, block, trial_type) %>% 
+    group_by(subids, block, trial_type, reached_crit) %>% 
     summarise(m_acc = mean(correct)) %>% 
     spread(key = block, value = m_acc) %>% 
     mutate(m_diff_score = posttest - pretest)
@@ -139,36 +198,66 @@ ggplot(aes(x = trial_type, y = mean, fill = trial_type),
     guides(fill=F)
 ```
 
-### Training performance across blocks
+## Analysis splitting by ss who reached criterion
+
+### Overall accuracy analysis
 
 ```{r}
 ms <- d1 %>% 
-    filter(trial_type == "training") %>% 
-    group_by(block) %>% 
-    multi_boot_standard(column = "correct") %>% 
-    mutate(prob_error = 1 - mean)
-```
+    filter(trial_type %in% c("relational")) %>% 
+    group_by(trial_type, block = as.factor(block), reached_crit) %>%
+    multi_boot_standard(column = "correct")
 
-Accuracy
 
-```{r}
-ggplot(data = ms, aes(x = as.numeric(block), y = mean)) + 
+ms %<>% ungroup() %>%  mutate(block = relevel(block, "pretest"))
+
+ggplot(aes(x = block, y = mean), data = ms) +
     geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper)) +
-    geom_line(group = 1) +
+    geom_line(aes(group=1)) +
     geom_hline(aes(yintercept = 0.5), linetype = "dashed") +
-    ylim(0.2, 1)
+    ylim(0,1.0) +
+    facet_grid(.~reached_crit) +
+    scale_color_solarized() +
+    theme_bw()
 ```
 
-### Average blocks to criterion
+### Within subjects change scores
+
+Distribution of change scores split by if ss reached criterion.
 
 ```{r}
-d1 %>% 
-    filter(trial_type == "training") %>% 
-    mutate(condition = "baseline") %>% 
-    group_by(subids, condition) %>% 
-    summarise(block_reached_crit = max(as.numeric(block))) %>% 
-    filter(block_reached_crit != 15) %>% # remove ss who didn't reach criterion
-    group_by(condition) %>% 
-    multi_boot_standard(column = "block_reached_crit") %>% 
-    knitr::kable()
+ggplot(data = ss_acc, aes(x = m_diff_score, fill = reached_crit)) + 
+    geom_density(alpha = 0.5) +
+    scale_fill_solarized()
+```
+
+```{r}
+ss_acc <- d1 %>% 
+    filter(trial_type %in% c("relational")) %>% 
+    group_by(subids, block, trial_type, reached_crit) %>% 
+    summarise(m_acc = mean(correct)) %>% 
+    spread(key = block, value = m_acc) %>% 
+    mutate(m_diff_score = posttest - pretest)
+
+# filter out ss 3SD away from mean
+ss_acc %<>%
+    mutate(include = ifelse(abs(m_diff_score) > sd(ss_acc$m_diff_score) * 3 +
+                                mean(ss_acc$m_diff_score),
+                            "no", "yes"))
+
+ms_change <- ss_acc %>% 
+    filter(include == "yes") %>% 
+    group_by(trial_type, reached_crit) %>% 
+    multi_boot_standard(column = "m_diff_score")
+
+ggplot(aes(x = trial_type, y = mean, fill = trial_type), 
+       data = ms_change) +
+    geom_bar(stat = "identity", width = 0.5) +
+    geom_linerange(aes(ymin = ci_lower, ymax = ci_upper)) +
+    facet_grid(.~reached_crit) +
+    geom_hline(yintercept = 0) +
+    scale_fill_solarized() +
+    ylim(-0.2, 0.2) + 
+    guides(fill=F) + 
+    theme_bw()
 ```
