@@ -24,6 +24,7 @@ Set working directory to where you stored raw JSON files.
 
 ```{r}
 setwd("../../raw-data/quadmods_baseline_full/production-results//")
+json.filenames = c("quadmods-baseline.csv")
 ```
 
 # Read in all the JSON strings

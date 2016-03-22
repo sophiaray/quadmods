@@ -6,11 +6,12 @@ output: html_document
 
 ```{r, echo = F}
 rm(list=ls()) # clear workspace
-knitr::opts_chunk$set(warning=FALSE, message=FALSE, sanitize = T, 
-                      fig.height=4, fig.width=7, echo=F, cache = T)
+knitr::opts_chunk$set(
+  fig.height=4, 
+  fig.width=7)
 ```
 
-```{r}
+```{r, results=F}
 library(langcog)
 library(dplyr)
 library(ggplot2)
@@ -42,7 +43,10 @@ d1 %<>%
     group_by(subids) %>% 
     summarise(block_reached_crit = max(block_num)) %>% 
     left_join(., d1) %>% 
-    mutate(reached_crit = ifelse(block_reached_crit < 15, "yes", "no"))
+    mutate(
+      reached_crit = ifelse(block_reached_crit < 15, "yes", "no"),
+      blocks_to_go = block_reached_crit - block_num + 1
+      )
 ```
 
 Descriptives
@@ -106,6 +110,133 @@ d1 %>%
 
 Visualization
 --------
+
+### Training performance across blocks for all Ss aggregate
+
+```{r}
+ms <- d1 %>% 
+  filter(trial_type == "training") %>%
+  group_by(blocks_to_go) %>% 
+  multi_boot_standard("correct") %>%
+  mutate( 
+    p_error = 1 - mean,
+    ci_lower = 1 - ci_lower,
+    ci_upper = 1 - ci_upper)
+    
+
+ggplot(data = ms, aes(x=as.numeric(blocks_to_go), y=p_error)) +
+  geom_pointrange(aes(ymin=ci_lower, ymax=ci_upper)) +
+  geom_line() +
+  geom_hline(aes(yintercept = 0.5), linetype = "dashed") +
+  ylim(0, .6) +
+  xlim(15,0) + 
+  scale_color_solarized() +
+  ylab("Probability of error") +
+  xlab("Blocks to go") +
+  theme(text = element_text(size = 20))
+```
+
+### Training performance across blocks for all Ss by reached crit
+
+```{r}
+ms <- d1 %>% 
+  filter(trial_type == "training") %>%
+  group_by(blocks_to_go, reached_crit) %>% 
+  multi_boot_standard("correct") %>%
+  mutate( 
+    p_error = 1 - mean,
+    ci_lower = 1 - ci_lower,
+    ci_upper = 1 - ci_upper)
+    
+
+ggplot(data = ms, aes(x=as.numeric(blocks_to_go), y=p_error, color=reached_crit)) +
+  geom_pointrange(aes(ymin=ci_lower, ymax=ci_upper)) +
+  geom_line() +
+  geom_hline(aes(yintercept = 0.5), linetype = "dashed") +
+  ylim(0, .6) +
+  xlim(15,0) + 
+  scale_color_solarized() +
+  ylab("Probability of error") +
+  xlab("Blocks to go") +
+  theme(text = element_text(size = 20))
+```
+
+### Training performance across blocks for all Ss by shape
+
+```{r}
+ms <- d1 %>% 
+  filter(trial_type == "training") %>%
+  group_by(blocks_to_go, question) %>% 
+  multi_boot_standard("correct") %>%
+  mutate( 
+    p_error = 1 - mean,
+    ci_lower = 1 - ci_lower,
+    ci_upper = 1 - ci_upper)
+    
+
+ggplot(data = ms, aes(x=blocks_to_go, y=p_error, color=c(question))) +
+  geom_pointrange(aes(ymin=ci_lower, ymax=ci_upper)) +
+  geom_line() +
+  geom_hline(aes(yintercept = 0.5), linetype = "dashed") +
+  ylim(0, .6) +
+  xlim(15,0) + 
+  scale_color_solarized() +
+  ylab("Probability of error") +
+  xlab("Blocks to go") +
+  theme(text = element_text(size = 20))
+```
+
+### Training performance across blocks for all Ss by shape for those who reached criterion
+
+```{r}
+ms <- d1 %>% 
+  filter(trial_type == "training", reached_crit=="yes") %>%
+  group_by(blocks_to_go, question) %>% 
+  multi_boot_standard("correct") %>%
+  mutate( 
+    p_error = 1 - mean,
+    ci_lower = 1 - ci_lower,
+    ci_upper = 1 - ci_upper)
+    
+
+ggplot(data = ms, aes(x=blocks_to_go, y=p_error, color=c(question))) +
+  geom_pointrange(aes(ymin=ci_lower, ymax=ci_upper)) +
+  geom_line() +
+  geom_hline(aes(yintercept = 0.5), linetype = "dashed") +
+  ylim(0, .6) +
+  xlim(15,0) + 
+  scale_color_solarized() +
+  ylab("Probability of error") +
+  xlab("Blocks to go") +
+  ggtitle("Shapes for reached crit") +
+  theme(text = element_text(size = 20))
+```
+
+### Training performance across blocks for all Ss by shape for those who did not reach criterion
+
+```{r}
+ms <- d1 %>% 
+  filter(trial_type == "training", reached_crit=="no") %>%
+  group_by(blocks_to_go, question) %>% 
+  multi_boot_standard("correct") %>%
+  mutate( 
+    p_error = 1 - mean,
+    ci_lower = 1 - ci_lower,
+    ci_upper = 1 - ci_upper)
+    
+
+ggplot(data = ms, aes(x=blocks_to_go, y=p_error, color=c(question))) +
+  geom_pointrange(aes(ymin=ci_lower, ymax=ci_upper)) +
+  geom_line() +
+  geom_hline(aes(yintercept = 0.5), linetype = "dashed") +
+  ylim(0, .6) +
+  xlim(15,0) + 
+  scale_color_solarized() +
+  ylab("Probability of error") +
+  xlab("Blocks to go") +
+  ggtitle("Shapes for did not reach crit") +
+  theme(text = element_text(size = 20))
+```
 
 ### Training performance across blocks split by ss who reached training criterion
 
