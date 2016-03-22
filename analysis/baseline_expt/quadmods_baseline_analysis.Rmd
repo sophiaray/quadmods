@@ -1,7 +1,7 @@
 ---
-title: "Quadrilateral learning experiments: Baseline"
+title: 'Quadrilateral learning experiments: Baseline'
+output: pdf_document
 date: "January 22, 2016"
-output: html_document
 ---
 
 ```{r, echo = F}
