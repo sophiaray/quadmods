@@ -12,7 +12,7 @@ function score_entity() {
 }
 
 // Basic inputs
-conditions = ["baseline", "active", "responsive"]
+conditions = ["random-order", "shape-order", "label-order"]
 shapes = ["square", "rectangle", "rhombus", "parallelogram"];
 num_examples_each_shape = 4;
 max_num_blocks = 15;
@@ -32,14 +32,13 @@ exp = {
 // urls are of the form: https://website.com/?shape=0&condition=0&assignmentId=123RVWYBAZW00EXAMPLE456RVWYBAZW00EXAMPLE&hitId=123RVWYBAZW00EXAMPLE&turkSubmitTo=https://www.mturk.com/&workerId=AZ3456EXAMPLE
 
 // the shape parameter is either 0,1,2,3, or r for the items in the `shapes` list or random
-// the condition parameter is either 0,1,2,3, or r for items in the `conditions` list or random
+// the condition parameter is either 0,1,2,3,4,5 or r for items in the `conditions` list or random
 
 //set parameters based on url
-url = $.url()
-shape_param = url.attr('shape') || 'r'
-cond_param = url.attr('condition') || 'r'
-exp.shape =  shape_param == 'r' ? _.sample(shapes) : shapes[shape_param]
-exp.condition =  cond_param == 'r' ? _.sample(conditions) : conditions[shape_param]
+query = URI.parseQuery(window.location.search)
+exp.condition = query["condition"] || 'r'
+if (exp.condition == 'r') { exp.condition = _.sample(conditions) }
+
 
 
 // now build some useful data
@@ -86,10 +85,10 @@ for (shape1 of shapes) {
 // we are going to build the stack to include a possible 256 training trials (16 trials in each block * 15 blocks)
 // we also include a block summary trial at the end of each block
 
-slides= [
+slides = [
   { name: "survey",
-     constructor: survey_constructor,
-     destructor: survey_destructor },
+    constructor: survey_constructor,
+    destructor: survey_destructor },
   { name: "relational_posttest",
     constructor: function() { relational_slide("posttest") },
     destructor: function () {return "boop"} },
@@ -104,6 +103,33 @@ slides= [
     destructor: instructions_destructor },
   ]
 
+// order function
+
+function order_slides (condition, shape_pairs) {
+  shape_pairs = _.shuffle(shape_pairs)
+
+  if (condition == "random-order") {
+    return shape_pairs
+  }
+
+  new_shape_pairs = []
+  sort_index = { "shape-order": 1,  "label-order": 0 }[condition]
+  while (shape_pairs.length > 0) {
+    new_pair = shape_pairs.shift()
+    new_key = new_pair[sort_index]
+    new_shape_pairs.push(new_pair)
+    for (var i = 0; i < shape_pairs.length; i++) {
+      new_pair = shape_pairs.shift()
+      if (new_pair[sort_index] == new_key) {
+        new_shape_pairs.push(new_pair)
+      } else {
+        shape_pairs.push(new_pair)
+      }
+    }
+  }
+  return new_shape_pairs
+}
+
 // build the stack of training trials
 // array with 256 training trials, and 16 summary trials at the end of each block
 // keep separated from experiment slide stack because training can be of variable length
@@ -111,7 +137,7 @@ slides= [
 training_trials_slides = [];training_trials_array = [];
 for (i = 0; i < max_num_blocks; i++) {
   // randomize order of shape pairs for each block
-  training_shape_pairs = _.shuffle(training_shape_pairs)
+  training_shape_pairs = order_slides(exp.condition, training_shape_pairs)
   for (pair in training_shape_pairs) {
     // build array of training trial info
     training_trial = {
@@ -147,7 +173,7 @@ function instructions_constructor() {
   text = $("<div class='block-text' id='instructions-text'>"); slide.append(text)
   text.append($("<p>").html("In this experiment, we're interested in your judgments about the membership of shapes into geometric classes. First you will answer some questions, then you will be shown a series of examples, and then you will be asked to answer additional questions. It should take about 10 minutes."))
   text.append($("<p>").html("(Note: you won't be able to preview this HIT before accepting it.)"))
-  text.append($("<p>").html("By answering the following questions, you are participating in a study being performed by cognitive scientists in the Stanford Department of Psychology. If you have questions about this research, please contact us at langcoglab@stanford.edu. You must be at least 18 years old to participate. Your participation in this research is voluntary. You may decline to answer any or all of the following questions. You may decline further participation, at any time, without adverse consequences. Your anonymity is assured; the researchers who have requested your participation will not receive any personal information about you."))
+  text.append($("<p>").html("By answering the following questions, you are participating in a study being performed by cognitive scientists in the Stanford Department of Psychology. If you have questions about this research, please contact us at s@sophiaray.info . You must be at least 18 years old to participate. Your participation in this research is voluntary. You may decline to answer any or all of the following questions. You may decline further participation, at any time, without adverse consequences. Your anonymity is assured; the researchers who have requested your participation will not receive any personal information about you."))
   text.append($("<p>").html("We have recently been made aware that your public Amazon.com profile can be accessed via your worker ID if you do not choose to opt out. If you would like to opt out of this feature, you may follow instructions available <a href ='http://www.amazon.com/gp/help/customer/display.html?nodeId=16465241'> here.  </a>"))
   text.append($("<p>").html("The button to proceed is delayed for 3 seconds to ensure that you have read these instructions."))
   $("body").append(slide)
@@ -296,7 +322,7 @@ function block_summary_constructor() {
     text.append($("<p>").html(`You currently have ${correct_blocks_counter} blocks in a row correct.`))
     text.append($("<p>").html("Remember, you will proceed to the final test questions once you correctly identify all the examples for 2 blocks in a row, or you complete 15 total training blocks."))
   }
-  
+
   $("body").append(slide)
   $(".slide").hide(); slide.show()
   block_summary_destructor();
