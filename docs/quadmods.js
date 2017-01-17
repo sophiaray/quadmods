@@ -106,28 +106,18 @@ slides = [
 // order function
 
 function order_slides (condition, shape_pairs) {
-  shape_pairs = _.shuffle(shape_pairs)
 
   if (condition == "random-order") {
-    return shape_pairs
+    return _.shuffle(shape_pairs)
   }
 
-  new_shape_pairs = []
+  order = _.shuffle(_.range(4))
   sort_index = { "shape-order": 1,  "label-order": 0 }[condition]
-  while (shape_pairs.length > 0) {
-    new_pair = shape_pairs.shift()
-    new_key = new_pair[sort_index]
-    new_shape_pairs.push(new_pair)
-    for (var i = 0; i < shape_pairs.length; i++) {
-      new_pair = shape_pairs.shift()
-      if (new_pair[sort_index] == new_key) {
-        new_shape_pairs.push(new_pair)
-      } else {
-        shape_pairs.push(new_pair)
-      }
-    }
+  order_object = _.object(shapes,order)
+  iteratee = function(candidate_pair) {
+    return order_object[candidate_pair[sort_index]]
   }
-  return new_shape_pairs
+  return _.sortBy(shape_pairs, iteratee)
 }
 
 // build the stack of training trials
