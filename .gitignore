@@ -7,3 +7,5 @@ experiment_v1/
 .RHistory
 Icon?
 .DS_Store
+**/config.py
+*.pyc
