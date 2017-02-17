@@ -3,7 +3,8 @@ from boto.mturk.question import ExternalQuestion
 from boto.mturk.qualification import LocaleRequirement, PercentAssignmentsApprovedRequirement, Qualifications, NumberHitsApprovedRequirement
 from config import AK,SK
 
-HOST = "mechanicalturk.sandbox.amazonaws.com"
+# HOST = "mechanicalturk.sandbox.amazonaws.com"
+HOST = "mechanicalturk.amazonaws.com"
 NUM_ITERATIONS = 10
 EXPERIMENT_URL = """https://sophiaray.github.io/quadmods/quadmods.html"""
 
@@ -28,4 +29,6 @@ new_hit = mtc.create_hit(
   questions = None,
   qualifications = quals )[0]
 
-print(new_hit.HITId)
+print("""
+Great work! Your HIT is now viewable at https://requester.mturk.com/mturk/manageHIT?viewableEditPane=manageHIT_downloadResults&HITId={}
+""".format(new_hit.HITId))
