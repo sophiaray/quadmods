@@ -19,7 +19,7 @@ max_num_blocks = 15;
 trials_in_block = 16;
 max_trials = max_num_blocks * trials_in_block;
 num_correct_block = 0;
-correct_blocks_counter = 0;
+correct_blocks_counter = 0; 
 
 exp = {
   data: [],
