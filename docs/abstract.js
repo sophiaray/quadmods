@@ -19,7 +19,7 @@ max_num_blocks = 15;
 trials_in_block = 16;
 max_trials = max_num_blocks * trials_in_block;
 num_correct_block = 0;
-correct_blocks_counter = 0; 
+correct_blocks_counter = 0;
 
 exp = {
   data: [],
@@ -101,9 +101,6 @@ slides = [
   { name: "instructions_2",
     constructor: instructions_constructor_2,
     destructor: instructions_destructor_2 },
-  { name: "relational_pretest",
-    constructor: function() { relational_slide("pretest") },
-    destructor: function () {return "boop"} },
   { name: "instructions_1",
     constructor: instructions_constructor,
     destructor: instructions_destructor },
