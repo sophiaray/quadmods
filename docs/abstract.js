@@ -1,8 +1,8 @@
 function score_entity() {
   scores = {}
-  for (q_shape of shapes) {
+  for (q_shape of exp.shapes) {
     scores[q_shape] = 0
-    for (a_shape of shapes) {
+    for (a_shape of exp.shapes) {
       correct = exp["e_pretest"][`${q_shape}_${a_shape}`] == subset_shapes[q_shape][a_shape]
       scores[q_shape] += correct
     }
@@ -10,39 +10,52 @@ function score_entity() {
   exp["e_scores"] = scores
   return scores
 }
-
-// Basic inputs
-conditions = ["random-order", "shape-order", "label-order"]
-shapes = ["square", "rectangle", "rhombus", "parallelogram"]
-num_examples_each_shape = 4;
-max_num_blocks = 15;
-trials_in_block = 16;
-max_trials = max_num_blocks * trials_in_block;
-num_correct_block = 0;
-correct_blocks_counter = 0;
-
 exp = {
-  data: [],
+  trial_data: [],
   num_examples_to_show: 3,
   num_examples_clicked: 0,
   instruction_wait_time: 3, // this should be 3 seconds
   feedback_wait_time: 500
 }
 
+//set parameters based on url
+query = URI.parseQuery(window.location.search)
+
+conditions = ["random-order", "shape-order", "label-order"]
+exp.condition = query["condition"] || 'r'
+if (exp.condition == 'r') { exp.condition = _.sample(conditions) }
+
+shapeConds = ["R,Rh,S", "R,Rh,S"]
+exp.shapeCond = query["shapeCond"] || "P,R,Rh,S"
+shape_dict = {"R":"rectangle", "Rh":"rhombus", "S":"square", "P":"parallelogram"}
+exp.shapes = []
+for (shape_idx of exp.shapeCond.split(",")) {
+  exp.shapes.push(shape_dict[shape_idx])
+}
+all_shapes = ["rectangle", "rhombus", "square", "parallelogram"]
+// Basic inputs
+
+
+num_examples_each_shape = 4;
+max_num_blocks = 15;
+trials_in_block = num_examples_each_shape*exp.shapes.length;
+max_trials = max_num_blocks * trials_in_block;
+num_correct_block = 0;
+correct_blocks_counter = 0;
+
+
+
 // urls are of the form: https://website.com/?shape=0&condition=0&assignmentId=123RVWYBAZW00EXAMPLE456RVWYBAZW00EXAMPLE&hitId=123RVWYBAZW00EXAMPLE&turkSubmitTo=https://www.mturk.com/&workerId=AZ3456EXAMPLE
 
 // the shape parameter is either 0,1,2,3, or r for the items in the `shapes` list or random
 // the condition parameter is either 0,1,2,3,4,5 or r for items in the `conditions` list or random
 
-//set parameters based on url
-query = URI.parseQuery(window.location.search)
-exp.condition = query["condition"] || 'r'
-if (exp.condition == 'r') { exp.condition = _.sample(conditions) }
+
 
 // set parameters for abstract objects according random assignment
 pseudowords = [["dramand", "dramands"], ["sime", "simes"], ["julex", "julexes"], ["shird", "shirds"]]
 
-exp.pseudo_obj = _.object(shapes,_.shuffle(pseudowords))
+exp.pseudo_obj = _.object(exp.shapes,_.shuffle(pseudowords))
 
 exp.border_values = _.shuffle(["dash", "solid"])
 exp.pattern_values = _.shuffle(["square", "circle"])
@@ -73,14 +86,19 @@ subset_shapes = {
 }
 
 shape_pairs = []; training_shape_pairs = [];
-for (shape1 of shapes) {
-  for (shape2 of shapes) {
-      training_shape_pairs.push([shape1, shape2]);
+for (shape1 of exp.shapes) {
+  for (shape2 of exp.shapes) {
     if (shape1 != shape2){
       shape_pairs.push([shape1, shape2])
     }
   }
 }
+for (shape1 of exp.shapes) {
+  for (shape2 of all_shapes) {
+    training_shape_pairs.push([shape1, shape2]);
+  }
+}
+
 
 // each of these should have a div in the html file
 // here, we pair each slide with a constructor and check function
@@ -116,7 +134,7 @@ function order_slides (condition, shape_pairs) {
 
   order = _.shuffle(_.range(4))
   sort_index = { "shape-order": 1,  "label-order": 0 }[condition]
-  order_object = _.object(shapes,order)
+  order_object = _.object(exp.shapes,order)
   iteratee = function(candidate_pair) {
     return order_object[candidate_pair[sort_index]]
   }
@@ -275,7 +293,9 @@ function relational_click() {
 
 function score_relational_test(r_questions_array, r_answers_array) {
   counter = 0;
-  for ( q in exp.r_questions_pretest ) {
+  console.log(exp.r_questions_posttest)
+  for ( q in exp.r_questions_posttest) {
+
     counter += 1;
     // get values we need to score trial
     q_shape = r_questions_array[q].split("_")[3];
@@ -283,6 +303,7 @@ function score_relational_test(r_questions_array, r_answers_array) {
     ss_response = r_answers_array[q];
     ss_response_bool = r_answers_array[q] == "Yes";
     correct_response = subset_shapes[q_shape][q_question];
+    console.log( q_question + ss_response)
     // score trial
     trial_correct = ss_response_bool == correct_response;
     // log data
@@ -296,20 +317,20 @@ function score_relational_test(r_questions_array, r_answers_array) {
       question: q_question,
       trial_time: "NA"
     }
-    exp.data.push(trial_data);
+    exp.trial_data.push(trial_data);
   }
 }
 
 function block_summary_constructor() {
   // update block counter
-  if ( num_correct_block == 16 ) {
+  if ( num_correct_block == trials_in_block ) {
     correct_blocks_counter++;
   } else {
     correct_blocks_counter = 0; // reset block counter if ss doesn't answer all questions correctly
   }
   slide = $("<div class='slide' id='block-summary-slide' >")
   text = $("<div class='block-text' id='block-summary-text'>"); slide.append(text)
-  text.append($("<p>").html(`You just finished training block ${trial.block}. And you got ${num_correct_block} out of 16 questions correct.`))
+  text.append($("<p>").html(`You just finished training block ${trial.block}. And you got ${num_correct_block} out of ${trials_in_block} questions correct.`))
   if ( correct_blocks_counter == 2 ) {
     text.append($("<p>").html(`Since you answered all training questions correctly for 2 blocks in a row, you will now advance to the final test questions!`))
   } else {
@@ -442,7 +463,7 @@ function training_constructor() {
   trial = training_trials_array.shift();
   question = trial.shape_pair[0];
   question_text = exp.pseudo_obj[question][0]
-  shape = trial.shape_pair[1];
+  shape = trial.shape_pair[1]
 
   img_html = generate_shape(shape)
 
@@ -510,7 +531,7 @@ function score_training() {
     question: question,
     trial_time: trial_training_time
   };
-  exp.data.push(trial_data);
+  exp.trial_data.push(trial_data);
 }
 
 function training_destructor() {
@@ -584,14 +605,15 @@ function generate_shape(shape_name) {
 
 function abstract_text(border,pattern) {
   svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.style.height = 125; svg.style.width = 125;
   svgNS = svg.namespaceURI;
   poly = document.createElementNS(svgNS,'polygon');
-  points = [[1+_.random(.25),1],
+  points = [[1 + _.random(.1),1],
             [2,1],
-            [3,0+_.random(.25)],
-            [4,1+_.random(.25)],
+            [3,0+_.random(.1)],
+            [4,1+_.random(.1)],
             [4,3],
-            [3+_.random(.25),4],
+            [3+_.random(.1),4],
             [1,4],
             [0,2]]
   scale = 30
