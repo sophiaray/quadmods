@@ -8,7 +8,7 @@ SANDBOX = False
 HOST = {True: "mechanicalturk.sandbox.amazonaws.com",
         False: "mechanicalturk.amazonaws.com"}[SANDBOX]
 NUM_ITERATIONS = 10
-EXPERIMENT_URL = """https://sophiaray.github.io/quadmods/abstract.html"""
+EXPERIMENT_URL = """https://sophiaray.github.io/quadmods/abstract.html?shapeCond=R,Rh,S&condition=label-order"""
 
 mtc = MTurkConnection(aws_access_key_id=AK, aws_secret_access_key=SK, host=HOST)
 

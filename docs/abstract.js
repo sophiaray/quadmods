@@ -25,7 +25,7 @@ conditions = ["random-order", "shape-order", "label-order"]
 exp.condition = query["condition"] || 'r'
 if (exp.condition == 'r') { exp.condition = _.sample(conditions) }
 
-shapeConds = ["R,Rh,S", "R,Rh,S"]
+shapeConds = ["R,Rh,S", "P,R,S"]
 exp.shapeCond = query["shapeCond"] || "P,R,Rh,S"
 shape_dict = {"R":"rectangle", "Rh":"rhombus", "S":"square", "P":"parallelogram"}
 exp.shapes = []
