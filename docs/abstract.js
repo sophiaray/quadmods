@@ -584,7 +584,7 @@ function end_exp() {
     exp.exp_total_time = exp_end_time - exp_start_time;
     // submit to turk
     setTimeout(function () {
-      turk.submit(data = exp, unwrap=false);
+      turk.submit(data = {foo:exp}, unwrap=false);
     }, 500);
   } else {
     text.append($("<p style='color:red'>").html('Please answer the first question before submtting.'))
